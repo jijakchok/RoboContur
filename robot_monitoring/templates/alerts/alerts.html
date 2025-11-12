@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Alerts Center
+{% endblock %}
+
+{% block content %}
+<div class="alert-section">
+    <div class="alert-filters">
+        <div>
+            <label>Alert Type</label>
+            <select class="browser-default">
+                <option>All Types</option>
+                <option>Critical</option>
+                <option>Warning</option>
+                <option>Maintenance</option>
+            </select>
+        </div>
+        <div>
+            <label>Robot</label>
+            <select class="browser-default">
+                <option>All Robots</option>
+                <option>RB-001</option>
+                <option>RB-002</option>
+                <option>RB-003</option>
+            </select>
+        </div>
+        <div>
+            <label>Status</label>
+            <select class="browser-default">
+                <option>Active Alerts</option>
+                <option>Resolved</option>
+                <option>All</option>
+            </select>
+        </div>
+        <div>
+            <label>Time Range</label>
+            <select class="browser-default">
+                <option>Last 24 hours</option>
+                <option>Last 7 days</option>
+                <option>Last 30 days</option>
+                <option>Custom</option>
+            </select>
+        </div>
+        <div style="text-align: right;">
+            <a class="btn" style="margin-top: 25px;">
+                <i class="material-icons left">download</i> Export
+            </a>
+        </div>
+    </div>
+
+    <div class="alert-section">
+        <div class="alert-section-header">
+            <h4>Critical Alerts</h4>
+            <a href="#" class="btn-flat">View all</a>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #F44336;">error</i>
+                    <span>Critical battery level - RB-004</span>
+                </div>
+                <div class="alert-time">Just now</div>
+            </div>
+            <p>InspectoBot 1 has critically low battery (12%). Needs immediate charging.</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #F44336;">error</i>
+                    <span>Emergency stop activated - RB-007</span>
+                </div>
+                <div class="alert-time">23 minutes ago</div>
+            </div>
+            <p>PackagingBot 3 emergency stop was triggered at Station 2.</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert-section">
+        <div class="alert-section-header">
+            <h4>Warning Alerts</h4>
+            <a href="#" class="btn-flat">View all</a>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #FFA000;">warning</i>
+                    <span>Motor temperature high - RB-003</span>
+                </div>
+                <div class="alert-time">1 hour ago</div>
+            </div>
+            <p>WelderBot 2 motor temperature approaching limit (78°C).</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #FFA000;">warning</i>
+                    <span>Low accuracy - RB-009</span>
+                </div>
+                <div class="alert-time">2 hours ago</div>
+            </div>
+            <p>PaintingBot 1 accuracy has dropped below acceptable threshold.</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert-section">
+        <div class="alert-section-header">
+            <h4>Maintenance Alerts</h4>
+            <a href="#" class="btn-flat">View all</a>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #2196F3;">build</i>
+                    <span>Gripper maintenance due - RB-001</span>
+                </div>
+                <div class="alert-time">3 hours ago</div>
+            </div>
+            <p>AssemblyBot 1 has reached 95% of expected gripper lifetime.</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #2196F3;">build</i>
+                    <span>Lubrication overdue - RB-005</span>
+                </div>
+                <div class="alert-time">1 day ago</div>
+            </div>
+            <p>WelderBot 1 joint lubrication is 2 days overdue.</p>
+            <div style="text-align: center;">
+                <button class="view-robot-btn">View Robot</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Reports & Analytics
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel">
+            <div class="header">
+                <h2>Report Filters</h2>
+                <div class="user-controls">
+                    <a href="#" class="btn" style="background-color: #f0f0f0; color: #333;">
+                        <i class="material-icons">download</i> Export
+                    </a>
+                </div>
+            </div>
+
+            <div class="report-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Report Type</label>
+                    <select class="browser-default">
+                        <option>Performance Summary</option>
+                        <option>Uptime Analysis</option>
+                        <option>Energy Consumption</option>
+                        <option>Maintenance Reports</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Robot Group</label>
+                    <select class="browser-default">
+                        <option>All Robots</option>
+                        <option>Assembly Line</option>
+                        <option>Warehouse</option>
+                        <option>Inspection</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Time Period</label>
+                    <select class="browser-default">
+                        <option>Last 7 days</option>
+                        <option>Last 14 days</option>
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Compare With</label>
+                    <select class="browser-default">
+                        <option>None</option>
+                        <option>Previous Period</option>
+                        <option>Same Period Last Year</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-panel">
+            <h4 class="header">Performance Summary (Last 30 Days)</h4>
+
+            <div class="row">
+                <div class="col s12 m4">
+                    <div class="report-card">
+                        <div class="report-card-title">Average Uptime</div>
+                        <div class="report-card-value">94.2%</div>
+                        <div class="report-card-change change-up">
+                            <i class="material-icons">trending_up</i> +1.5% from last period
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="report-card">
+                        <div class="report-card-title">Tasks Completed</div>
+                        <div class="report-card-value">12,847</div>
+                        <div class="report-card-change change-up">
+                            <i class="material-icons">trending_up</i> +8% from last period
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="report-card">
+                        <div class="report-card-title">Energy Consumption</div>
+                        <div class="report-card-value">5,428 kWh</div>
+                        <div class="report-card-change change-down">
+                            <i class="material-icons">trending_down</i> -3% from last period
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

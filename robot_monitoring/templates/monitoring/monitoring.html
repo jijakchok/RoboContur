@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Robot Monitoring
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel">
+            <h4 class="header">Live Robot Feeds</h4>
+
+            <div class="row">
+                {% for robot in robots %}
+                <div class="col s12 m4">
+                    <div class="card-panel">
+                        <div style="width: 100%; height: 200px; background: #000; display: flex; align-items: center; justify-content: center; color: #ccc; margin-bottom: 10px;">
+                            <i class="material-icons" style="font-size: 40px;">videocam</i>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div>{{ robot.name }} ({{ robot.id }})</div>
+                                <div style="color: #78909c; font-size: 13px;">
+                                    <i class="material-icons" style="font-size: 16px; vertical-align: middle;">location_on</i> Warehouse Zone
+                                </div>
+                            </div>
+                            <div style="background: {% if robot.status == 'Active' %}#4CAF50{% elif robot.status == 'Warning' %}#FFC107{% else %}#F44336{% endif %}; color: white; padding: 4px 8px; border-radius: 16px; font-size: 12px;">
+                                {{ robot.status }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel">
+            <h4 class="header">Robot Performance Metrics</h4>
+
+            <div class="row">
+                <div class="col s12 m4">
+                    <h5>Uptime (Last 24h)</h5>
+                    <div class="progress" style="height: 8px; margin: 5px 0;">
+                        <div class="determinate" style="width: {{ metrics.uptime|slice:':-1' }}%; background-color: #4CAF50;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Average: {{ metrics.uptime }}</span>
+                        <span>Target: 95%</span>
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <h5>Task Completion Rate</h5>
+                    <div class="progress" style="height: 8px; margin: 5px 0;">
+                        <div class="determinate" style="width: {{ metrics.task_completion|slice:':-1' }}%; background-color: #4CAF50;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Average: {{ metrics.task_completion }}</span>
+                        <span>Target: 90%</span>
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <h5>Error Rate</h5>
+                    <div class="progress" style="height: 8px; margin: 5px 0;">
+                        <div class="determinate" style="width: {{ metrics.error_rate|slice:':-1' }}%; background-color: #F44336;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Average: {{ metrics.error_rate }}</span>
+                        <span>Target: ≤2%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel">
+            <h4 class="header">Sensor Data Stream</h4>
+
+            <table class="robot-table">
+                <thead>
+                    <tr>
+                        <th>ROBOT</th>
+                        <th>TEMPERATURE</th>
+                        <th>BATTERY</th>
+                        <th>SIGNAL</th>
+                        <th>LAST UPDATE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for robot in robots %}
+                    <tr>
+                        <td>
+                            <div class="robot-type">
+                                {% if robot.id == 'RB-001' %}
+                                    <i class="material-icons">settings</i>
+                                {% elif robot.id == 'RB-002' %}
+                                    <i class="material-icons">local_shipping</i>
+                                {% elif robot.id == 'RB-003' %}
+                                    <i class="material-icons">lightning_bolt</i>
+                                {% endif %}
+                                <div>
+                                    <div>{{ robot.id }}</div>
+                                    <div style="color: #78909c; font-size: 13px;">{{ robot.name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ robot.temperature }}</td>
+                        <td>{{ robot.battery }}%</td>
+                        <td>{{ robot.signal }}</td>
+                        <td>{{ robot.last_update }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

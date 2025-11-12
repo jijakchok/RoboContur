@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <h1 class="header">Парк роботов</h1>
+            <p class="grey-text">Управление парком автономных роботов</p>
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="row">
+        <div class="col s12">
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s12 m6 l3">
+                        <select class="browser-default">
+                            <option value="" disabled selected>Все типы</option>
+                            <option value="1">Манипулятор</option>
+                            <option value="2">AMR</option>
+                            <option value="3">Дрон</option>
+                        </select>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <select class="browser-default">
+                            <option value="" disabled selected>Все статусы</option>
+                            <option value="1">Активен</option>
+                            <option value="2">Ошибка</option>
+                            <option value="3">В простое</option>
+                        </select>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <select class="browser-default">
+                            <option value="" disabled selected>Все зоны</option>
+                            <option value="1">Склад</option>
+                            <option value="2">Производство</option>
+                            <option value="3">Лаборатория</option>
+                        </select>
+                    </div>
+                    <div class="col s12 m6 l3">
+                        <a class="waves-effect waves-light btn blue">
+                            <i class="material-icons left">search</i>Применить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список роботов -->
+    <div class="row">
+        <div class="col s12">
+            <ul class="collapsible">
+                {% for robot in robots %}
+                <li>
+                    <div class="collapsible-header">
+                        <div class="status-badge status-{{ robot.color }}"></div>
+                        <span class="header">{{ robot.name }}</span>
+                        <span class="chip">{{ robot.status }}</span>
+                        <span class="secondary-content">ID: {{ robot.id }}</span>
+                    </div>
+                    <div class="collapsible-body">
+                        <div class="row">
+                            <div class="col s12 m6 l4">
+                                <p><strong>Тип:</strong> Манипулятор</p>
+                                <p><strong>Заряд:</strong> 75%</p>
+                                <p><strong>Последнее обновление:</strong> 5 мин. назад</p>
+                            </div>
+                            <div class="col s12 m6 l4">
+                                <p><strong>Местоположение:</strong> Склад, зона 3</p>
+                                <p><strong>Текущая задача:</strong> Паллетизация</p>
+                                <p><strong>Время работы:</strong> 12 ч 30 мин</p>
+                            </div>
+                            <div class="col s12 m12 l4 center-align">
+                                <a href="{% url 'robot_detail' robot.id %}" class="btn blue">Детали</a>
+                                <a href="#!" class="btn yellow">Назначить задачу</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+          </div>
+    </div>
+
+    <!-- Кнопка добавления -->
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large blue">
+            <i class="material-icons">add</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating red"><i class="material-icons">add_circle</i></a></li>
+            <li><a class="btn-floating yellow darken-1"><i class="material-icons">assignment</i></a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

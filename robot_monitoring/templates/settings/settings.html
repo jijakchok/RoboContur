@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Settings
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="settings-menu">
+        <h5 class="header">Settings Menu</h5>
+
+        <div class="settings-menu-item active">
+            <i class="material-icons">account_circle</i> User Profile
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">shield</i> Security
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">notifications</i> Notifications
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">warning</i> Alert Settings
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">build</i> Robot Configuration
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">group</i> User Management
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">database</i> Data Retention
+        </div>
+
+        <div class="settings-menu-item">
+            <i class="material-icons">language</i> System Settings
+        </div>
+    </div>
+
+    <div class="settings-content">
+        <div class="settings-section">
+            <h4 class="settings-section-title">User Profile</h4>
+            <p>Update your personal information and preferences</p>
+
+            <div class="user-profile-container">
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Operator" alt="Profile">
+                </div>
+
+                <div class="user-info">
+                    <div>
+                        <label>First name</label>
+                        <div>Operator</div>
+                    </div>
+
+                    <div>
+                        <label>Last name</label>
+                        <div>Admin</div>
+                    </div>
+
+                    <div>
+                        <label>Email address</label>
+                        <div>operator@example.com</div>
+                    </div>
+
+                    <div>
+                        <label>Phone number</label>
+                        <div>+1 (555) 123-4567</div>
+                    </div>
+
+                    <div>
+                        <label>Timezone</label>
+                        <div>(UTC-08:00) Pacific Time (US & Canada)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4 class="settings-section-title">Notification Preferences</h4>
+
+            <div class="notification-preferences">
+                <div class="form-group">
+                    <input type="checkbox" id="email-notifications" checked>
+                    <label for="email-notifications">Email notifications</label>
+                    <p style="font-size: 12px; color: #757575;">Get notified about important system events via email</p>
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="push-notifications" checked>
+                    <label for="push-notifications">Push notifications</label>
+                    <p style="font-size: 12px; color: #757575;">Receive instant alerts on your mobile device</p>
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="sms-alerts">
+                    <label for="sms-alerts">SMS alerts</label>
+                    <p style="font-size: 12px; color: #757575;">Get critical alerts via text message</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4 class="settings-section-title">Change Password</h4>
+
+            <div class="password-form">
+                <div class="form-group">
+                    <label for="current-password">Current password</label>
+                    <input type="password" id="current-password" placeholder="Enter current password">
+                </div>
+
+                <div class="form-group">
+                    <label for="new-password">New password</label>
+                    <input type="password" id="new-password" placeholder="Enter new password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm new password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm new password">
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: flex-end; justify-content: flex-end;">
+                    <button class="btn" style="background-color: #e0e0e0; color: #333; margin-right: 10px;">Cancel</button>
+                    <button class="btn" style="background-color: #1565c0; color: white;">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

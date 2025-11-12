@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Robot Details: {{ robot.name }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m8">
+        <div class="card-panel">
+            <h4>Robot Information</h4>
+            <table class="striped">
+                <tbody>
+                    <tr>
+                        <td><strong>ID:</strong></td>
+                        <td>{{ robot.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ robot.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status:</strong></td>
+                        <td>
+                            <span class="status-badge status-active">{{ robot.status }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Battery Level:</strong></td>
+                        <td>
+                            <div class="progress" style="height: 8px; margin: 5px 0;">
+                                <div class="determinate" style="width: {{ robot.battery }}%; background-color: {% if robot.battery < 20 %}#F44336{% elif robot.battery < 50 %}#FFC107{% else %}#4CAF50{% endif %};"></div>
+                            </div>
+                            {{ robot.battery }}%
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Location:</strong></td>
+                        <td>{{ robot.location }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Current Task:</strong></td>
+                        <td>{{ robot.task }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Temperature:</strong></td>
+                        <td>{{ robot.temperature }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Uptime:</strong></td>
+                        <td>{{ robot.uptime }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last Maintenance:</strong></td>
+                        <td>{{ robot.last_maintenance }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-panel">
+            <h4>Telemetry Data</h4>
+            <div style="height: 300px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <p>Graph will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m4">
+        <div class="card-panel">
+            <h4>Quick Actions</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn">Pause</button>
+                <button class="btn">Resume</button>
+                <button class="btn red">E-Stop</button>
+                <button class="btn">Return to Base</button>
+            </div>
+        </div>
+
+        <div class="card-panel">
+            <h4>Alerts</h4>
+            <ul class="collection">
+                <li class="collection-item">
+                    <span class="status-badge status-warning">WARNING</span>
+                    Low battery threshold approaching
+                </li>
+                <li class="collection-item">
+                    <span class="status-badge status-critical">CRITICAL</span>
+                    Motor temperature high
+                </li>
+            </ul>
+            <a href="{% url 'alerts' %}" class="btn-flat">View all alerts</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

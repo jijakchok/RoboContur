@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Dashboard Overview
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-cards">
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <h3>Total Robots</h3>
+            <i class="material-icons">settings</i>
+        </div>
+        <div class="dashboard-card-value">24</div>
+        <div class="dashboard-card-subtitle">
+            <i class="material-icons">trending_up</i> 2 new this week
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <h3>Active Robots</h3>
+            <i class="material-icons">monitor_heart</i>
+        </div>
+        <div class="dashboard-card-value">18</div>
+        <div class="dashboard-card-subtitle">
+            75% of fleet
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <h3>Alerts</h3>
+            <i class="material-icons">warning</i>
+        </div>
+        <div class="dashboard-card-value">3</div>
+        <div class="dashboard-card-subtitle">
+            <i class="material-icons">info</i> 1 critical
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <h3>Maintenance</h3>
+            <i class="material-icons">build</i>
+        </div>
+        <div class="dashboard-card-value">2</div>
+        <div class="dashboard-card-subtitle">
+            <i class="material-icons">access_time</i> Due this week
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel">
+            <h4 class="header">Robot Fleet Status</h4>
+            <table class="robot-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>TYPE</th>
+                        <th>STATUS</th>
+                        <th>BATTERY</th>
+                        <th>LOCATION</th>
+                        <th>TASK</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for robot in robots %}
+                    <tr{% if robot.status == 'Critical' %} style="background-color: #FFEBEE;"{% elif robot.status == 'Warning' %} style="background-color: #FFF8E1;"{% endif %}>
+                        <td>{{ robot.id }}</td>
+                        <td>{{ robot.name }}</td>
+                        <td>
+                            <div class="robot-type">
+                                {% if robot.type == 'Manipulator' %}
+                                    <i class="material-icons">settings</i>
+                                {% elif robot.type == 'Mobile' %}
+                                    <i class="material-icons">local_shipping</i>
+                                {% elif robot.type == 'Drone' %}
+                                    <i class="material-icons">airplanemode_active</i>
+                                {% elif robot.type == 'Specialized' %}
+                                    <i class="material-icons">lightning_bolt</i>
+                                {% endif %}
+                                {{ robot.type }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{% if robot.status == 'Активен' or robot.status == 'Active' %}active{% elif robot.status == 'В простое' or robot.status == 'Warning' %}warning{% else %}critical{% endif %}">
+                                {{ robot.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 8px; margin: 5px 0;">
+                                <div class="determinate" style="width: {{ robot.battery }}%; background-color: {% if robot.battery < 20 %}#F44336{% elif robot.battery < 50 %}#FFC107{% else %}#4CAF50{% endif %};"></div>
+                            </div>
+                            {{ robot.battery }}%
+                        </td>
+                        <td>{{ robot.location }}</td>
+                        <td>{{ robot.task }}</td>
+                        <td>
+                            <a href="{% url 'robot_detail' robot.id %}" class="btn-flat">View</a>
+                            <a href="{% url 'robot_control' robot.id %}" class="btn-flat">Control</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'fleet' %}" class="waves-effect waves-light btn blue">View all robots</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m6">
+        <div class="card-panel">
+            <div class="header">
+                <h4>Recent Alerts</h4>
+                <a href="{% url 'alerts' %}" class="btn-flat">View all</a>
+            </div>
+
+            <div class="alert-item">
+                <h4><i class="material-icons" style="color: #D32F2F;">warning</i> Critical battery level</h4>
+                <p>InspectoBot 1 (RB-004) has critically low battery (12%). Needs immediate charging.</p>
+                <span class="alert-time">Just now</span>
+            </div>
+
+            <div class="alert-item">
+                <h4><i class="material-icons" style="color: #F57F17;">warning</i> Motor temperature high</h4>
+                <p>WelderBot 2 (RB-003) motor temperature approaching limit (78°C).</p>
+                <span class="alert-time">15 minutes ago</span>
+            </div>
+
+            <div class="alert-item">
+                <h4><i class="material-icons" style="color: #388E3C;">build</i> Maintenance required</h4>
+                <p>AssemblyBot 1 (RB-001) has reached 95% of expected gripper lifetime.</p>
+                <span class="alert-time">2 hours ago</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m6">
+        <div class="card-panel">
+            <h4 class="header">Robot Visualization</h4>
+
+            <div class="robot-visualization">
+                <div style="width: 100px; height: 100px; background-color: #e0e0e0; border-radius: 50%; margin-bottom: 10px;"></div>
+                <div style="width: 120px; height: 10px; background-color: #e0e0e0; border-radius: 5px; margin-bottom: 30px;"></div>
+                <div style="display: flex; align-items: center;">
+                    <span class="status-indicator"></span> Active
+                </div>
+
+                <div class="robot-metrics">
+                    <div class="metric-item">
+                        <h5>Battery</h5>
+                        <div class="value">85%</div>
+                    </div>
+                    <div class="metric-item">
+                        <h5>Temperature</h5>
+                        <div class="value">42°C</div>
+                    </div>
+                    <div class="metric-item">
+                        <h5>Uptime</h5>
+                        <div class="value">8h 23m</div>
+                    </div>
+                </div>
+
+                <a href="{% url 'robot_detail' 'RB-001' %}" class="btn" style="margin-top: 20px;">
+                    <i class="material-icons left">open_in_new</i> View
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

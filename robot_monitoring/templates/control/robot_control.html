@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Robot Control Panel
+{% endblock %}
+
+{% block content %}
+<div class="control-section">
+    <h4 class="header">Joystick Control</h4>
+    <div class="joystick-control">
+        <div class="joystick-area">
+            <div class="joystick-circle"></div>
+            <div class="joystick-directions">
+                <div class="joystick-btn"><i class="material-icons">arrow_back</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_upward</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_forward</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_back</i></div>
+                <div class="joystick-btn"><i class="material-icons">highlight_off</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_forward</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_back</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_downward</i></div>
+                <div class="joystick-btn"><i class="material-icons">arrow_forward</i></div>
+            </div>
+            <div style="font-size: 12px; color: #757575; margin-top: 10px;">Drag the circle to move the robot</div>
+        </div>
+
+        <div style="flex: 1;">
+            <div class="row">
+                <div class="col s6">
+                    <div class="btn-large" style="width: 100%; margin: 5px 0;">
+                        <i class="material-icons left">refresh</i> Rotate Left
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="btn-large" style="width: 100%; margin: 5px 0;">
+                        <i class="material-icons left">refresh</i> Rotate Right
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <div class="btn-large" style="width: 70%; margin: 10px 0;">
+                    <i class="material-icons left">power_settings_new</i> Emergency Stop
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="control-section">
+    <h4 class="header">Preset Actions</h4>
+    <div class="preset-actions">
+        <div class="preset-action">
+            <i class="material-icons">cube</i>
+            <h4>Pick and Place</h4>
+            <p>Standard assembly routine</p>
+        </div>
+        <div class="preset-action">
+            <i class="material-icons">stack</i>
+            <h4>Stack Items</h4>
+            <p>Pallet stacking pattern</p>
+        </div>
+        <div class="preset-action">
+            <i class="material-icons">autorenew</i>
+            <h4>Cycle Test</h4>
+            <p>Full motion cycle test</p>
+        </div>
+        <div class="preset-action">
+            <i class="material-icons">home</i>
+            <h4>Home Position</h4>
+            <p>Return to neutral position</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
