@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     # сторонние
     'rest_framework',
     'channels',
+    'material',
+    'material.frontend',
 ]
 
 MIDDLEWARE = [
