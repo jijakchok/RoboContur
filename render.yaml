@@ -1,16 +1,16 @@
-services:
-  - type: web
-    name: robot-monitoring
-    env: python
-    rootDirectory: "./"  # Это ключевой параметр - указывает искать проект в корне
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    startCommand: "gunicorn robot_monitoring.wsgi:application --bind 0.0.0.0:$PORT"
-    envVars:
-      - key: DEBUG
-        value: "False"
-      - key: SECRET_KEY
-        generateValue: true
-      - key: ALLOWED_HOSTS
-        value: ".onrender.com,localhost,127.0.0.1"
-      - key: DJANGO_SETTINGS_MODULE
-        value: robot_monitoring.settings
+[service]
+type = "web"
+env = "python"
+rootDirectory = "robot_monitoring"
+
+[build]
+buildCommand = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+
+[deploy]
+startCommand = "gunicorn robot_monitoring.wsgi:application --bind 0.0.0.0:$PORT"
+
+[env]
+DEBUG = "False"
+SECRET_KEY = "${{ generate }}"
+ALLOWED_HOSTS = ".railway.app,localhost,127.0.0.1"
+DJANGO_SETTINGS_MODULE = "robot_monitoring.settings"
