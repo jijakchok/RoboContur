@@ -3,7 +3,6 @@ type = "web"
 env = "python"
 
 [build]
-builder = "NIXPACKS"
 buildCommand = "cd robot_monitoring && pip install -r requirements.txt && python manage.py collectstatic --noinput"
 
 [deploy]
@@ -12,5 +11,5 @@ startCommand = "cd robot_monitoring && gunicorn robot_monitoring.wsgi:applicatio
 [env]
 DEBUG = "False"
 SECRET_KEY = "${{ generate }}"
-ALLOWED_HOSTS = ".railway.app,.railway.app,localhost,127.0.0.1"
+ALLOWED_HOSTS = ".railway.app,localhost,127.0.0.1"
 DJANGO_SETTINGS_MODULE = "robot_monitoring.settings"
