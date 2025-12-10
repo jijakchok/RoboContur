@@ -119,7 +119,7 @@ def format_robots_context(robots_data):
 def call_hf_api(user_message, robot_context):
     """Выполняет запрос к Hugging Face API с правильным URL"""
     # Токен Hugging Face
-    HF_TOKEN = "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"
+
 
     headers = {
         "Authorization": f"Bearer {HF_TOKEN}",
