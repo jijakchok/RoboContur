@@ -1,16 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from dashboard.models import Robot, Alert
+
 
 def robot_detail_view(request, robot_id):
-    # Пока используем статические данные для демонстрации
-    robot = {
-        "id": robot_id,
-        "name": f"Robot-{robot_id}",
-        "status": "Active",
-        "battery": 75,
-        "location": "Warehouse Zone A",
-        "task": "Material Transport",
-        "temperature": "38°C",
-        "uptime": "5h 23m",
-        "last_maintenance": "2023-10-15"
+    # Получаем робота из базы данных
+    robot = get_object_or_404(Robot, robot_id=robot_id)
+
+    # Получаем алерты, связанные с этим роботом
+    alerts = Alert.objects.filter(robot=robot, resolved=False).order_by('-created_at')
+
+    context = {
+        'robot': robot,
+        'alerts': alerts
     }
-    return render(request, "diagnostics/robot_detail.html", {"robot": robot})
+
+    return render(request, "diagnostics/robot_detail.html", context)

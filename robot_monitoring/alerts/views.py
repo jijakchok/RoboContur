@@ -1,9 +1,26 @@
 from django.shortcuts import render
 
+from dashboard.models import Robot, Alert
+
+
 def alerts_view(request):
-    alerts = [
-        {"id": 1, "robot": "Robot-A", "type": "CRITICAL", "description": "Перегрев", "time": "14:23:45"},
-        {"id": 2, "robot": "Robot-B", "type": "WARNING", "description": "Низкий заряд", "time": "14:22:12"},
-        {"id": 3, "robot": "Robot-C", "type": "INFO", "description": "Задача завершена", "time": "14:20:33"},
-    ]
-    return render(request, "alerts/alerts.html", {"alerts": alerts})
+    # Получаем все активные алерты (не решенные)
+    active_alerts = Alert.objects.filter(resolved=False).select_related('robot').order_by('-created_at')
+
+    # Фильтруем алерты по типам
+    critical_alerts = active_alerts.filter(alert_type='critical')
+    warning_alerts = active_alerts.filter(alert_type='warning')
+    maintenance_alerts = active_alerts.filter(alert_type='maintenance')
+
+    # Получаем список всех роботов для фильтра
+    robots = Robot.objects.all().order_by('name')
+
+    context = {
+        'critical_alerts': critical_alerts,
+        'warning_alerts': warning_alerts,
+        'maintenance_alerts': maintenance_alerts,
+        'robots': robots,
+        'current_page': 'alerts'
+    }
+
+    return render(request, "alerts/alerts.html", context)

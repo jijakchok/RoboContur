@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Страница не найдена (404)
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m10 offset-m1 l8 offset-l2">
+        <div class="card-panel block" style="text-align: center; padding: 40px;">
+            <i class="material-icons" style="font-size: 80px; color: #f44336; margin-bottom: 20px;">error_outline</i>
+            <h2>Страница не найдена</h2>
+            <p style="font-size: 18px; color: #616161; margin: 20px 0;">
+                К сожалению, запрашиваемая вами страница не существует или была перемещена.
+            </p>
+            <div style="margin: 30px 0;">
+                <a href="{% url 'dashboard' %}" class="btn waves-effect waves-light" style="background-color: #1565c0; margin: 0 10px;">
+                    <i class="material-icons left">dashboard</i>Вернуться на дашборд
+                </a>
+                <a href="{% url 'chat' %}" class="btn waves-effect waves-light" style="background-color: #4CAF50; margin: 0 10px;">
+                    <i class="material-icons left">chat</i>Перейти в чат с AI
+                </a>
+            </div>
+            <p style="color: #9e9e9e; font-style: italic; margin-top: 20px;">
+                Код ошибки: 404 - Not Found
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

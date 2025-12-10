@@ -1,0 +1,123 @@
+/* Глобальные отступы и расположение */
+body {
+  background-color: #f5f5f5;
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Сайдбар */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 240px;
+  background-color: #263238;
+  z-index: 999;
+  padding-top: 20px;
+  transition: transform 0.3s;
+}
+
+/* Основной контент */
+.main-content {
+  margin-left: 240px;
+  padding: 20px;
+  transition: margin-left 0.3s;
+}
+
+/* Сетка для карточек */
+.grid,
+.dashboard-cards,
+.fleet-metrics,
+.robot-groups,
+.reports-metrics,
+.control-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Сетка для фильтров */
+.alert-filters,
+.report-filters,
+.filters-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Сетка для метрик */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Страница настроек */
+.settings-container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+}
+
+.settings-menu {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.settings-content {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Таблицы */
+.table-responsive {
+  overflow-x: auto;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+  .settings-container {
+    grid-template-columns: 1fr;
+  }
+
+  .grid,
+  .dashboard-cards,
+  .fleet-metrics,
+  .reports-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .robot-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .alert-filters,
+  .report-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Устранение смещений */
+.col, .row {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Единые отступы для всех секций */
+.section {
+  margin-bottom: 20px;
+}

@@ -1,4 +1,144 @@
-/* Стили для страницы мониторинга */
+body {
+    background-color: #f5f5f5;
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 240px;
+    background-color: #263238;
+    z-index: 999;
+    padding-top: 20px;
+    transition: transform 0.3s;
+}
+
+.sidebar a {
+    color: #cfd8dc;
+    padding: 12px 20px;
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sidebar a:hover {
+    background-color: #37474f;
+}
+
+.sidebar a.active {
+    background-color: #1565c0;
+    border-left: 4px solid #2196f3;
+    color: white;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.sidebar .user-profile {
+    padding: 20px;
+    background-color: #1565c0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar .user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 240px;
+    padding: 20px;
+    transition: margin-left 0.3s;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.header .user-controls {
+    display: flex;
+    align-items: center;
+}
+
+.header .user-controls a {
+    margin-left: 15px;
+    color: #546e7a;
+}
+
+/* Dashboard cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dashboard-card-header h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #546e7a;
+}
+
+.dashboard-card-header i {
+    font-size: 24px;
+}
+
+.dashboard-card-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.dashboard-card-subtitle {
+    font-size: 12px;
+    color: #546e7a;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-card-subtitle i {
+    color: #4CAF50;
+    margin-right: 5px;
+}
+
+/* Table styles */
 .robot-table {
     width: 100%;
     border-collapse: collapse;
@@ -32,6 +172,29 @@
     background-color: #f8f9fa;
 }
 
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #E8F5E9;
+    color: #388E3C;
+}
+
+.status-warning {
+    background-color: #FFF8E1;
+    color: #F57F17;
+}
+
+.status-critical {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+}
+
 .robot-type {
     display: flex;
     align-items: center;
@@ -42,15 +205,187 @@
     font-size: 18px;
 }
 
-/* Стили для страницы отчетов */
-.reports-metrics {
+/* Alert styles */
+.alert-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+.alert-item h4 {
+    font-size: 15px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.alert-item h4 i {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+.alert-item p {
+    font-size: 13px;
+    color: #546e7a;
+    margin: 5px 0 0;
+}
+
+.alert-item .alert-time {
+    font-size: 12px;
+    color: #78909c;
+}
+
+/* Robot visualization */
+.robot-visualization {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.robot-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.metric-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.metric-item h5 {
+    font-size: 14px;
+    color: #546e7a;
+    margin: 0;
+    font-weight: 500;
+}
+
+.metric-item .value {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* Control panel styles */
+.control-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.control-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.joystick-control {
+    display: flex;
+    gap: 20px;
+}
+
+.joystick-area {
+    flex: 1;
+    height: 300px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.joystick-circle {
+    width: 120px;
+    height: 120px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joystick-directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.joystick-btn {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.joystick-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.preset-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.preset-action {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-action:hover {
+    background-color: #e0e0e0;
+}
+
+.preset-action i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.preset-action h4 {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.preset-action p {
+    font-size: 12px;
+    color: #757575;
+}
+
+/* Fleet Management styles */
+.fleet-metrics {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin-bottom: 20px;
 }
 
-.report-card {
+.fleet-metric {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -59,47 +394,228 @@
     flex-direction: column;
 }
 
-.report-card-header {
+.fleet-metric-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
-.report-card-value {
-    font-size: 28px;
+.fleet-metric-value {
+    font-size: 32px;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin: 10px 0;
 }
 
-.report-card-change {
+.fleet-metric-subtitle {
     font-size: 12px;
+    color: #546e7a;
     display: flex;
     align-items: center;
 }
 
-.change-up {
-    color: #4CAF50;
-}
-
-.change-down {
-    color: #F44336;
-}
-
-/* Стили для страницы настроек */
-.settings-menu {
+.fleet-location-map {
     background-color: #f5f5f5;
+    border-radius: 8px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.settings-content {
+.map-placeholder {
+    text-align: center;
+}
+
+.map-placeholder i {
+    font-size: 48px;
+    color: #757575;
+    margin-bottom: 10px;
+}
+
+.robot-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.robot-group {
     background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
-.user-profile-container {
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.group-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.fleet-utilization {
     background-color: white;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
+}
+
+.utilization-chart {
+    height: 300px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.utilization-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.utilization-stat {
+    text-align: center;
+}
+
+.utilization-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+.utilization-stat-label {
+    font-size: 12px;
+    color: #757575;
+}
+
+/* Alerts styles */
+.alert-filters {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.alert-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.alert-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.alert-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+.alert-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.alert-item i {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.alert-item .alert-time {
+    font-size: 12px;
+    color: #757575;
+}
+
+.alert-item .view-robot-btn {
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.alert-item .view-robot-btn:hover {
+    background-color: #d0d0d0;
+}
+
+/* Settings styles */
+.settings-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+}
+
+.settings-menu {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.settings-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.settings-menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.settings-menu-item.active {
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.settings-menu-item i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.settings-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.user-profile-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .user-info {
@@ -131,14 +647,303 @@
     border-radius: 4px;
 }
 
-.notification-preferences {
+/* Responsive */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-240px);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .settings-container {
+        grid-template-columns: 1fr;
+    }
+
+    .notification-preferences,
+    .password-form {
+        grid-template-columns: 1fr;
+    }
+
+    .user-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* New styles for layout fixes */
+.dashboard-cards {
+    margin-bottom: 30px;
+}
+
+.dashboard-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.robot-fleet-status {
+    grid-column: 1 / span 2;
+}
+
+.robot-visualization {
+    height: auto;
+}
+
+.alert-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.alert-item p {
+    margin: 5px 0;
+    flex: 1;
+}
+
+.alert-item .view-robot-btn {
+    margin-left: 15px;
+    align-self: flex-start;
+}
+
+.fleet-location-map {
+    width: 100%;
+}
+
+.settings-menu-item[data-item="data-retention"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+.alert-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 15px;
 }
 
-.password-form {
+.alert-content {
+    flex: 1;
+}
+
+.alert-content p {
+    margin: 5px 0;
+    color: #546e7a;
+}
+.fleet-location-container {
+    grid-column: 1;
+    width: 100%;
+}
+
+.fleet-location-map {
+    height: 400px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+/* Alert button positioning */
+.alert-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+.alert-content p {
+    margin: 5px 0;
+    color: #546e7a;
+}
+
+/* Fleet map alignment */
+.fleet-location-container {
+    grid-column: 1;
+    width: 100%;
+}
+
+.fleet-location-map {
+    height: 400px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* Dashboard layout adjustments */
+.dashboard-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.robot-fleet-status {
+    grid-column: 1 / span 1;
+}
+
+.dashboard-right-section {
+    grid-column: 2 / span 1;
+}
+
+.robot-visualization {
+    height: auto;
+    padding: 15px;
+}
+
+/* Registration page styles */
+.registration-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* User dropdown improvements */
+.user-dropdown-content {
+    min-width: 200px;
+}
+
+.user-dropdown-content li {
+    padding: 0 15px;
+}
+
+.user-dropdown-content li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.user-dropdown-content li a i {
+    margin-right: 10px;
+}
+/* Ensure consistent button positioning */
+.alert-item-header {
+    display: flex;
+    align-items: flex-start; /* Changed from center to align top */
+    justify-content: space-between;
     gap: 15px;
+}
+
+.view-robot-btn {
+    min-width: 85px;
+    text-align: center;
+    margin-top: 0; /* Remove any top margin that might exist */
+}
+
+/* Make sure alert content doesn't push buttons down */
+.alert-content {
+    flex: 1;
+    min-width: 0; /* Allows content to shrink properly */
+}
+
+/* Keep time aligned to the right */
+.alert-time {
+    text-align: right;
+    white-space: nowrap;
+}
+/* Полное решение для выравнивания кнопок */
+.alert-item-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 15px;
+    align-items: flex-start;
+    padding: 10px 0;
+}
+
+.alert-content {
+    min-width: 0; /* Позволяет тексту переноситься правильно */
+}
+
+.view-robot-btn {
+    width: 100px; /* Фиксированная ширина для всех кнопок */
+    height: 32px; /* Фиксированная высота */
+    margin-top: 5px; /* Небольшой отступ сверху для выравнивания */
+    align-self: flex-start !important;
+}
+
+.alert-time {
+    text-align: right;
+    align-self: flex-start;
+    margin-top: 5px; /* Выравнивание по верху вместе с кнопкой */
+}
+
+/* Дополнительные стили для адаптивности */
+@media (max-width: 768px) {
+    .alert-item-header {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .view-robot-btn,
+    .alert-time {
+        justify-self: flex-end;
+        margin-top: 0;
+    }
+}
+/* Основное выравнивание карты */
+.fleet-location-container {
+    grid-column: 1;
+    width: 100%;
+    padding-left: 0 !important;
+    margin-left: -1px; /* Точный сдвиг влево */
+}
+
+.fleet-location-map {
+    margin-left: 0;
+    border-left: none;
+}
+
+/* Если используется grid-контейнер для метрик */
+.fleet-metrics {
+    margin-left: -1px; /* Синхронизация с картой */
+}
+/* Универсальный класс для всех блоков */
+.block {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: white !important;
+  margin-bottom: 1.25rem;
+}
+
+/* Убираем дублирование тени для Materialize-карточек */
+.card-panel.block {
+  box-shadow: none;
+}
+.fleet-utilization {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.utilization-chart {
+    height: 300px;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.utilization-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.utilization-stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3f51b5;
+}
+
+.utilization-stat-label {
+    font-size: 14px;
+    color: #757575;
 }

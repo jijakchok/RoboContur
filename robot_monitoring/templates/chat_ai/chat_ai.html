@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Анализ состояния всех роботов
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="card-panel block">
+            <div class="chat-container" style="height: 650px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; background: #ffffff; margin-bottom: 20px;">
+                <!-- Сообщения чата будут появляться здесь -->
+                <div class="chat-message assistant">
+                    <div class="chip" style="background-color: #e8f5e9; color: #388e3c;">
+                        <img src="https://ui-avatars.com/api/?name=AI  " width="24" class="left">
+                        AI Ассистент
+                    </div>
+                    <p>Привет! Я готов проанализировать состояние всех ваших роботов. Задайте любой вопрос о работе робототехнического комплекса, и я дам вам детальный ответ на основе актуальных данных.</p>
+                </div>
+            </div>
+
+            <!-- Область ввода -->
+            <div class="input-area">
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col s11">
+                        <div class="input-field" style="margin-bottom: 0;">
+                            <textarea id="user-message-input" class="materialize-textarea"
+                                      placeholder="Задайте вопрос по работе всех роботов... Например: 'Сервис в норме?', 'Какая средняя температура по роботам?', 'Есть ли аномалии в работе?'"></textarea>
+                            <label for="user-message-input">Ваш вопрос</label>
+                        </div>
+                    </div>
+                    <div class="col s1" style="display: flex; align-items: flex-end; justify-content: center;">
+                        <button class="btn-floating waves-effect waves-light" style="background-color: #1565c0; width: 42px; height: 42px;" id="send-button" title="Отправить">
+                            <i class="material-icons" style="font-size: 20px;">send</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="col s12" style="display: flex; justify-content: flex-end;">
+                        <button class="btn waves-effect waves-light" style="background-color: #4CAF50;" id="save-chat-button">
+                            <i class="material-icons left">save</i>Сохранить отчет
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация компонентов Materialize
+    M.textareaAutoResize(document.querySelector('#user-message-input'));
+
+    // Элементы DOM
+    const sendButton = document.getElementById('send-button');
+    const saveChatButton = document.getElementById('save-chat-button');
+    const chatContainer = document.querySelector('.chat-container');
+    const userMessageInput = document.getElementById('user-message-input');
+
+    // Функция добавления сообщения в чат
+    function addMessageToChat(role, content, isSystemMessage = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${role}`;
+        messageDiv.style.marginTop = '15px';
+
+        const isUser = role === 'user';
+        const avatarUrl = isUser ?
+            "https://ui-avatars.com/api/?name=Operator&background=1565c0&color=ffffff" :
+            "https://ui-avatars.com/api/?name=AI&background=388e3c&color=ffffff";
+        const bgColor = isUser ? "#e3f2fd" : "#e8f5e9";
+        const textColor = isUser ? "#1565c0" : "#388e3c";
+        const senderName = isUser ? "Вы" : "AI Ассистент";
+
+        let messageHTML = `
+            <div class="chip" style="background-color: ${bgColor}; color: ${textColor};">
+                <img src="${avatarUrl}" width="24" class="left">
+                ${senderName}
+            </div>
+            <p style="${isSystemMessage ? 'color: #546e7a; font-style: italic;' : ''}">${content}</p>
+        `;
+
+        messageDiv.innerHTML = messageHTML;
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Кнопка отправки сообщения
+    sendButton.addEventListener('click', async function() {
+        const userMessage = userMessageInput.value.trim();
+        if (!userMessage) {
+            M.toast({html: 'Пожалуйста, введите ваш вопрос'});
+            return;
+        }
+
+        // Добавляем сообщение пользователя в чат
+        addMessageToChat('user', userMessage);
+        userMessageInput.value = '';
+
+        // Показываем индикатор загрузки
+        const loadingMessage = document.createElement('div');
+        loadingMessage.className = 'chat-message assistant';
+        loadingMessage.style.marginTop = '15px';
+        loadingMessage.innerHTML = `
+            <div class="chip" style="background-color: #e8f5e9; color: #388e3c;">
+                <img src="https://ui-avatars.com/api/?name=AI&background=388e3c&color=ffffff" width="24" class="left">
+                AI Ассистент
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="preloader-wrapper active" style="width: 20px; height: 20px;">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <span>Анализирую данные всех роботов...</span>
+            </div>
+        `;
+        chatContainer.appendChild(loadingMessage);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            // Отправляем запрос к API с запросом на анализ всех роботов
+            const response = await fetch('/chat/api/evaluate-all-robots/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    include_all_robots: true
+                })
+            });
+
+            const result = await response.json();
+
+            // Удаляем индикатор загрузки
+            chatContainer.removeChild(loadingMessage);
+
+            if (result.success) {
+                // Добавляем ответ ассистента
+                addMessageToChat('assistant', result.response);
+            } else {
+                throw new Error(result.error || 'Неизвестная ошибка');
+            }
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            // Удаляем индикатор загрузки если он еще есть
+            if (chatContainer.lastChild === loadingMessage) {
+                chatContainer.removeChild(loadingMessage);
+            }
+            addMessageToChat('assistant', `
+                <div style="color: #d32f2f;">
+                    <i class="material-icons" style="vertical-align: middle;">error</i>
+                    Ошибка при анализе данных: ${error.message}
+                </div>
+            `);
+        }
+    });
+
+    // Кнопка сохранения чата
+    saveChatButton.addEventListener('click', function() {
+        // В реальной реализации здесь будет AJAX-запрос для сохранения отчета
+        const chatContent = chatContainer.innerHTML;
+        console.log("Сохранение отчета:", chatContent);
+
+        // Эмуляция сохранения
+        M.toast({html: 'Отчет успешно сохранен!', classes: 'rounded green'});
+
+        // Можно добавить индикацию сохранения
+        saveChatButton.innerHTML = '<i class="material-icons left">check</i>Сохранено';
+        saveChatButton.disabled = true;
+
+        // Восстановление кнопки через 2 секунды
+        setTimeout(() => {
+            saveChatButton.innerHTML = '<i class="material-icons left">save</i>Сохранить отчет';
+            saveChatButton.disabled = false;
+        }, 2000);
+    });
+
+    // Обработка нажатия Enter в поле ввода
+    userMessageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendButton.click();
+        }
+    });
+
+    // Примеры быстрых вопросов (опционально)
+    const quickQuestions = [
+        "Сервис в норме?",
+        "Какая средняя температура по роботам?",
+        "Есть ли роботы с критическим зарядом батареи?",
+        "Покажи статистику по всем роботам"
+    ];
+
+    // Добавим примеры вопросов как подсказки (опционально)
+    setTimeout(() => {
+        addMessageToChat('assistant', `
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 10px; font-size: 13px;">
+                <p style="margin: 0 0 8px 0;"><strong>Примеры вопросов для быстрого старта:</strong></p>
+                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                    ${quickQuestions.map(q => `
+                        <span style="background: white; border: 1px solid #e0e0e0; border-radius: 16px; padding: 4px 10px; font-size: 12px; cursor: pointer;"
+                              class="quick-question" data-question="${q}">
+                            ${q}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `, true);
+
+        // Обработчик для быстрых вопросов
+        document.querySelectorAll('.quick-question').forEach(el => {
+            el.addEventListener('click', function() {
+                userMessageInput.value = this.getAttribute('data-question');
+                M.textareaAutoResize(userMessageInput);
+                sendButton.click();
+            });
+        });
+    }, 500);
+});
+</script>
+<style>
+/* Дополнительные стили для чата */
+.chat-message {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message .chip {
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-message p {
+    margin: 0;
+    line-height: 1.5;
+    background: #f9f9f9;
+    padding: 12px 15px;
+    border-radius: 0 15px 15px 15px;
+    border-left: 3px solid #2196f3;
+    max-width: 85%;
+}
+
+.chat-message.user p {
+    background: #e3f2fd;
+    border-left-color: #1565c0;
+    border-radius: 15px 0 15px 15px;
+    margin-left: auto;
+}
+
+.quick-question:hover {
+    background: #e3f2fd !important;
+    border-color: #1565c0 !important;
+    cursor: pointer;
+}
+
+/* Стили для индикатора загрузки */
+.preloader-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.spinner-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.circle-clipper {
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    border-color: inherit;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 200%;
+    height: 100%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #1565c0 transparent;
+    -webkit-animation: rotate 1s linear infinite;
+    animation: rotate 1s linear infinite;
+    transition: all .3s ease-in-out;
+}
+
+.circle-clipper.left .circle {
+    border-right-color: transparent;
+    transform: rotate(129deg);
+}
+
+.circle-clipper.right .circle {
+    left: -100%;
+    border-left-color: transparent;
+    transform: rotate(-129deg);
+}
+
+@-webkit-keyframes rotate {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
+{% endblock %}

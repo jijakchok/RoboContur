@@ -1,177 +1,295 @@
 {% extends 'base.html' %}
 
 {% block header %}
-Dashboard Overview
+Дашборд мониторинга роботов
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-cards">
-    <div class="dashboard-card">
-        <div class="dashboard-card-header">
-            <h3>Total Robots</h3>
-            <i class="material-icons">settings</i>
-        </div>
-        <div class="dashboard-card-value">24</div>
-        <div class="dashboard-card-subtitle">
-            <i class="material-icons">trending_up</i> 2 new this week
-        </div>
-    </div>
-
-    <div class="dashboard-card">
-        <div class="dashboard-card-header">
-            <h3>Active Robots</h3>
-            <i class="material-icons">monitor_heart</i>
-        </div>
-        <div class="dashboard-card-value">18</div>
-        <div class="dashboard-card-subtitle">
-            75% of fleet
-        </div>
-    </div>
-
-    <div class="dashboard-card">
-        <div class="dashboard-card-header">
-            <h3>Alerts</h3>
-            <i class="material-icons">warning</i>
-        </div>
-        <div class="dashboard-card-value">3</div>
-        <div class="dashboard-card-subtitle">
-            <i class="material-icons">info</i> 1 critical
-        </div>
-    </div>
-
-    <div class="dashboard-card">
-        <div class="dashboard-card-header">
-            <h3>Maintenance</h3>
-            <i class="material-icons">build</i>
-        </div>
-        <div class="dashboard-card-value">2</div>
-        <div class="dashboard-card-subtitle">
-            <i class="material-icons">access_time</i> Due this week
-        </div>
-    </div>
-</div>
-
 <div class="row">
+    <!-- Общая статистика -->
     <div class="col s12">
-        <div class="card-panel">
-            <h4 class="header">Robot Fleet Status</h4>
-            <table class="robot-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>NAME</th>
-                        <th>TYPE</th>
-                        <th>STATUS</th>
-                        <th>BATTERY</th>
-                        <th>LOCATION</th>
-                        <th>TASK</th>
-                        <th>ACTIONS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for robot in robots %}
-                    <tr{% if robot.status == 'Critical' %} style="background-color: #FFEBEE;"{% elif robot.status == 'Warning' %} style="background-color: #FFF8E1;"{% endif %}>
-                        <td>{{ robot.id }}</td>
-                        <td>{{ robot.name }}</td>
-                        <td>
-                            <div class="robot-type">
-                                {% if robot.type == 'Manipulator' %}
-                                    <i class="material-icons">settings</i>
-                                {% elif robot.type == 'Mobile' %}
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3>Всего роботов</h3>
+                    <i class="material-icons">smart_toy</i>
+                </div>
+                <div class="dashboard-card-value">{{ total_robots }}</div>
+                <div class="dashboard-card-subtitle">
+                    <i class="material-icons">check_circle</i>
+                    {{ active_robots }} активных
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3>Критические оповещения</h3>
+                    <i class="material-icons">error</i>
+                </div>
+                <div class="dashboard-card-value">{{ critical_alerts }}</div>
+                <div class="dashboard-card-subtitle">
+                    <i class="material-icons">warning</i>
+                    {{ warning_alerts }} предупреждений
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3>На обслуживании</h3>
+                    <i class="material-icons">build</i>
+                </div>
+                <div class="dashboard-card-value">{{ maintenance_robots }}</div>
+                <div class="dashboard-card-subtitle">
+                    <i class="material-icons">schedule</i>
+                    {{ maintenance_alerts }} запланировано
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+    <div class="dashboard-card-header">
+        <h3>Группы</h3>
+        <i class="material-icons">group</i>
+    </div>
+    <div class="dashboard-card-value">{{ robot_groups|length|default:robot_groups.count }}</div>
+    <div class="dashboard-card-subtitle">
+        <i class="material-icons">info</i>
+        {% if is_test_data %}
+            Тестовые группы
+        {% else %}
+            Организация роботов
+        {% endif %}
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- График активности (заглушка)<div class="col s12">
+        <div class="card-panel block">
+            <h5>Активность роботов за последний час</h5>
+            <div class="robot-visualization" style="height: 250px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <i class="material-icons" style="font-size: 48px; color: #757575;">show_chart</i>
+                    <p style="color: #757575; margin-top: 10px;">График активности будет отображаться здесь</p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+    <!-- Таблица роботов -->
+    <!-- Таблица роботов -->
+<div class="col s12">
+    <div class="card-panel block">
+        <div class="row">
+            <div class="col s12">
+                <h5>Текущие роботы</h5>
+                <table class="robot-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Тип</th>
+                            <th>Группа</th>
+                            <th>Статус</th>
+                            <th>Батарея</th>
+                            <th>Температура</th>
+                            <th>Местоположение</th>
+                            <th>Задача</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for robot in recent_robots %}
+                        <tr>
+                            <td>{{ robot.robot_id|default:robot.id }}</td>
+                            <td>{{ robot.name }}</td>
+                            <td>
+                                <div class="robot-type">
+                                    {% if robot.robot_type == 'warehouse' or robot.robot_type == 'Складской' %}
+                                    <i class="material-icons">inventory</i>
+                                    {% elif robot.robot_type == 'production' or robot.robot_type == 'Производственный' %}
+                                    <i class="material-icons">build</i>
+                                    {% elif robot.robot_type == 'delivery' or robot.robot_type == 'Доставки' %}
                                     <i class="material-icons">local_shipping</i>
-                                {% elif robot.type == 'Drone' %}
-                                    <i class="material-icons">airplanemode_active</i>
-                                {% elif robot.type == 'Specialized' %}
-                                    <i class="material-icons">lightning_bolt</i>
-                                {% endif %}
-                                {{ robot.type }}
-                            </div>
-                        </td>
-                        <td>
-                            <span class="status-badge status-{% if robot.status == 'Активен' or robot.status == 'Active' %}active{% elif robot.status == 'В простое' or robot.status == 'Warning' %}warning{% else %}critical{% endif %}">
-                                {{ robot.status }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress" style="height: 8px; margin: 5px 0;">
-                                <div class="determinate" style="width: {{ robot.battery }}%; background-color: {% if robot.battery < 20 %}#F44336{% elif robot.battery < 50 %}#FFC107{% else %}#4CAF50{% endif %};"></div>
-                            </div>
-                            {{ robot.battery }}%
-                        </td>
-                        <td>{{ robot.location }}</td>
-                        <td>{{ robot.task }}</td>
-                        <td>
-                            <a href="{% url 'robot_detail' robot.id %}" class="btn-flat">View</a>
-                            <a href="{% url 'robot_control' robot.id %}" class="btn-flat">Control</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a href="{% url 'fleet' %}" class="waves-effect waves-light btn blue">View all robots</a>
+                                    {% elif robot.robot_type == 'inspection' or robot.robot_type == 'Инспекционный' %}
+                                    <i class="material-icons">visibility</i>
+                                    {% elif robot.robot_type == 'cleaning' or robot.robot_type == 'Уборки' %}
+                                    <i class="material-icons">clean_hands</i>
+                                    {% else %}
+                                    <i class="material-icons">smart_toy</i>
+                                    {% endif %}
+                                    {{ robot.robot_type|default:"Общий" }}
+                                </div>
+                            </td>
+                            <td>{{ robot.group|default:"Без группы" }}</td>
+                            <td>
+                                <span class="status-badge
+                                    {% if robot.status == 'active' %}status-active
+                                    {% elif robot.status == 'warning' %}status-warning
+                                    {% elif robot.status == 'critical' %}status-critical
+                                    {% elif robot.status == 'maintenance' %}status-maintenance
+                                    {% else %}status-inactive{% endif %}">
+                                    {% if robot.status == 'active' %}Активен
+                                    {% elif robot.status == 'warning' %}Предупреждение
+                                    {% elif robot.status == 'critical' %}Критический
+                                    {% elif robot.status == 'maintenance' %}Обслуживание
+                                    {% else %}{{ robot.status }}{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 8px;">
+                                  <div class="progress" style="height: 8px;">
+    <div class="determinate" style="width: {{ robot.battery_level|default:85 }}%;
+        background-color: {% if robot.battery_level|default:85 < 30 %}#d32f2f{% elif robot.battery_level|default:85 < 50 %}#f57f17{% else %}#388e3c{% endif %};">
+    </div>
+</div>
+<span style="font-size: 12px;">{{ robot.battery_level|default:85|floatformat:0 }}%</span>
+                            <td>
+                                <span style="color: {% if robot.temperature|default:30 > 45 %}#d32f2f{% elif robot.temperature|default:30 > 40 %}#f57f17{% else %}#388e3c{% endif %};">
+                                    {{ robot.temperature|default:30|floatformat:1 }}°C
+                                </span>
+                            </td>
+                            <td>{{ robot.location|default:"Неизвестно" }}</td>
+                            <td>{{ robot.task|default:robot.current_task|default:"Без задачи"|truncatechars:20 }}</td>
+                            <td>
+    <a href="{% url 'robot_detail' robot.robot_id %}" class="btn btn-small blue" title="Просмотреть">
+        <i class="material-icons">visibility</i>
+    </a>
+</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="center-align">Нет данных о роботах</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col s12 m6">
-        <div class="card-panel">
-            <div class="header">
-                <h4>Recent Alerts</h4>
-                <a href="{% url 'alerts' %}" class="btn-flat">View all</a>
+    <!-- Оповещения -->
+    <div class="col s12">
+    <div class="card-panel block">
+        <h5>Активные оповещения</h5>
+        <div class="row">
+            <div class="col s4">
+                <div class="collection">
+                    <h6 class="collection-header">Критические</h6>
+                    {% if critical_alerts_list %}
+                        {% for alert in critical_alerts_list %}
+                        <a href="#" class="collection-item red white-text">
+                            <div class="row">
+                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="#" class="collection-item">Нет критических оповещений</a>
+                    {% endif %}
+                </div>
             </div>
-
-            <div class="alert-item">
-                <h4><i class="material-icons" style="color: #D32F2F;">warning</i> Critical battery level</h4>
-                <p>InspectoBot 1 (RB-004) has critically low battery (12%). Needs immediate charging.</p>
-                <span class="alert-time">Just now</span>
+            <div class="col s4">
+                <div class="collection">
+                    <h6 class="collection-header">Предупреждения</h6>
+                    {% if warning_alerts_list %}
+                        {% for alert in warning_alerts_list %}
+                        <a href="#" class="collection-item orange white-text">
+                            <div class="row">
+                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="#" class="collection-item">Нет предупреждений</a>
+                    {% endif %}
+                </div>
             </div>
-
-            <div class="alert-item">
-                <h4><i class="material-icons" style="color: #F57F17;">warning</i> Motor temperature high</h4>
-                <p>WelderBot 2 (RB-003) motor temperature approaching limit (78°C).</p>
-                <span class="alert-time">15 minutes ago</span>
-            </div>
-
-            <div class="alert-item">
-                <h4><i class="material-icons" style="color: #388E3C;">build</i> Maintenance required</h4>
-                <p>AssemblyBot 1 (RB-001) has reached 95% of expected gripper lifetime.</p>
-                <span class="alert-time">2 hours ago</span>
+            <div class="col s4">
+                <div class="collection">
+                    <h6 class="collection-header">Обслуживание</h6>
+                    {% if maintenance_alerts_list %}
+                        {% for alert in maintenance_alerts_list %}
+                        <a href="#" class="collection-item blue white-text">
+                            <div class="row">
+                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="#" class="collection-item">Нет роботов на обслуживании</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col s12 m6">
-        <div class="card-panel">
-            <h4 class="header">Robot Visualization</h4>
-
-            <div class="robot-visualization">
-                <div style="width: 100px; height: 100px; background-color: #e0e0e0; border-radius: 50%; margin-bottom: 10px;"></div>
-                <div style="width: 120px; height: 10px; background-color: #e0e0e0; border-radius: 5px; margin-bottom: 30px;"></div>
-                <div style="display: flex; align-items: center;">
-                    <span class="status-indicator"></span> Active
+    <!-- Статистика по местоположениям -->
+    <div class="col s12">
+        <div class="card-panel block">
+            <h5>Статистика по местоположениям</h5>
+            <div class="row">
+                {% for location in location_stats %}
+                <div class="col s6 m4 l3">
+                    <div class="fleet-metric">
+                        <div class="fleet-metric-header">
+                            <h4>{{ location.location|default:"Неизвестное место" }}</h4>
+                            <i class="material-icons">location_on</i>
+                        </div>
+                        <div class="fleet-metric-value">{{ location.count }}</div>
+                        <div class="fleet-metric-subtitle">
+                            <i class="material-icons">battery_charging_full</i>
+                            Средний заряд: {{ location.avg_battery|default:0|floatformat:0 }}%
+                        </div>
+                        <div class="fleet-metric-subtitle">
+                            <i class="material-icons">thermostat</i>
+                            Средняя темп: {{ location.avg_temperature|default:0|floatformat:1 }}°C
+                        </div>
+                    </div>
                 </div>
-
-                <div class="robot-metrics">
-                    <div class="metric-item">
-                        <h5>Battery</h5>
-                        <div class="value">85%</div>
-                    </div>
-                    <div class="metric-item">
-                        <h5>Temperature</h5>
-                        <div class="value">42°C</div>
-                    </div>
-                    <div class="metric-item">
-                        <h5>Uptime</h5>
-                        <div class="value">8h 23m</div>
-                    </div>
+                {% empty %}
+                <div class="col s12">
+                    <p class="center-align" style="color: #757575;">Нет данных по местоположениям</p>
                 </div>
-
-                <a href="{% url 'robot_detail' 'RB-001' %}" class="btn" style="margin-top: 20px;">
-                    <i class="material-icons left">open_in_new</i> View
-                </a>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Materialize компонентов
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+
+    // Простая анимация для статистики
+    const stats = document.querySelectorAll('.dashboard-card-value');
+    stats.forEach(stat => {
+        const value = parseInt(stat.textContent);
+        stat.textContent = '0';
+
+        let current = 0;
+        const increment = Math.ceil(value / 30);
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= value) {
+                current = value;
+                clearInterval(timer);
+            }
+            stat.textContent = current;
+        }, 30);
+    });
+
+    // Обработчик для кнопок действий (модифицированный)
+
+});
+</script>
+{% endblock %}
+

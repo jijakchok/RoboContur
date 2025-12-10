@@ -1,3 +1,4 @@
+base.html
 <!DOCTYPE html>
 <html lang="ru">
 {% load static %}
@@ -6,12 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>РобоКонтур - Мониторинг роботов</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght=300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons  " rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto  :wght=300;400;500&display=swap" rel="stylesheet">
     <!-- Materialize CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css  " rel="stylesheet">
     <!-- Custom styles -->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             background-color: #f5f5f5;
@@ -689,34 +691,31 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar">
+        <div class="sidebar">
         <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=Operator" alt="Profile">
+            <img src="https://ui-avatars.com/api/?name=Operator  " alt="Profile">
             <div>
                 <div>Operator</div>
                 <div style="font-size: 12px; color: #e0e0e0;">Admin</div>
             </div>
         </div>
-
-        <a href="/" class="active">
+        <a href="/" class="{% if current_page == 'dashboard' %}active{% endif %}">
             <i class="material-icons">dashboard</i> Dashboard
         </a>
-        <a href="{% url 'monitoring' %}">
-            <i class="material-icons">monitor</i> Monitoring
-        </a>
-        <a href="{% url 'control' %}">
-            <i class="material-icons">tune</i> Control
-        </a>
-        <a href="{% url 'alerts' %}">
+        <a href="{% url 'alerts' %}" class="{% if current_page == 'alerts' %}active{% endif %}">
             <i class="material-icons">warning</i> Alerts
         </a>
-        <a href="{% url 'fleet' %}">
+        <a href="{% url 'fleet' %}" class="{% if current_page == 'fleet' %}active{% endif %}">
             <i class="material-icons">people</i> Fleet Management
         </a>
-        <a href="{% url 'reports' %}">
+
+        <a href="{% url 'chat' %}" class="{% if current_page == 'chat' %}active{% endif %}">
+            <i class="material-icons">insert_chart</i> Chat
+        </a>
+        <a href="{% url 'reports' %}" class="{% if current_page == 'reports' %}active{% endif %}">
             <i class="material-icons">insert_chart</i> Reports
         </a>
-        <a href="{% url 'settings' %}">
+        <a href="{% url 'settings' %}" class="{% if current_page == 'settings' %}active{% endif %}">
             <i class="material-icons">settings</i> Settings
         </a>
     </div>
@@ -726,17 +725,17 @@
         <div class="header">
             <h1>{% block header %}{% endblock %}</h1>
             <div class="user-controls">
-                <a href="#" class="tooltipped" data-position="bottom" data-tooltip="Notifications">
-                    <i class="material-icons">notifications</i>
-                </a>
-                <a href="#" class="tooltipped" data-position="bottom" data-tooltip="Messages">
-                    <i class="material-icons">chat_bubble</i>
-                </a>
-                <a href="#" class="dropdown-trigger" data-target="user-dropdown">
-                    <span>Operator</span>
-                    <i class="material-icons right">arrow_drop_down</i>
-                </a>
-            </div>
+    <a href="{% url 'alerts' %}" class="tooltipped" data-tooltip="Alerts" data-position="bottom">
+    <i class="material-icons">notifications</i>
+</a>
+<a href="{% url 'chat' %}" class="tooltipped" data-tooltip="Chat" data-position="bottom">
+    <i class="material-icons">chat</i>
+</a>
+    <a href="#" class="dropdown-trigger" data-target="user-dropdown">
+        <span>Operator</span>
+        <i class="material-icons right">arrow_drop_down</i>
+    </a>
+</div>
         </div>
 
         {% block content %}{% endblock %}
@@ -744,14 +743,13 @@
 
     <!-- Dropdown Structure -->
     <ul id="user-dropdown" class="dropdown-content">
-        <li><a href="#!"><i class="material-icons">account_circle</i> Profile</a></li>
-        <li><a href="#!"><i class="material-icons">settings</i> Settings</a></li>
-        <li class="divider"></li>
-        <li><a href="#!"><i class="material-icons">exit_to_app</i> Logout</a></li>
-    </ul>
+    <li><a href="{% url 'settings' %}"><i class="material-icons">settings</i> Settings</a></li>
+    <li class="divider"></li>
+    <li><a href="{% url 'reg' %}"><i class="material-icons">exit_to_app</i> Logout</a></li>
+</ul>
 
     <!-- Materialize JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js  "></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Инициализация dropdown

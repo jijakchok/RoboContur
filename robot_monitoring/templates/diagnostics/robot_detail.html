@@ -6,14 +6,14 @@ Robot Details: {{ robot.name }}
 
 {% block content %}
 <div class="row">
-    <div class="col s12 m8">
-        <div class="card-panel">
-            <h4>Robot Information</h4>
+    <div class="col s12">
+        <div class="card-panel" style="padding: 20px;">
+            <h4 style="margin-top: 0;">Robot Information</h4>
             <table class="striped">
                 <tbody>
                     <tr>
-                        <td><strong>ID:</strong></td>
-                        <td>{{ robot.id }}</td>
+                        <td style="width: 200px;"><strong>ID:</strong></td>
+                        <td>{{ robot.robot_id }}</td>
                     </tr>
                     <tr>
                         <td><strong>Name:</strong></td>
@@ -22,16 +22,26 @@ Robot Details: {{ robot.name }}
                     <tr>
                         <td><strong>Status:</strong></td>
                         <td>
-                            <span class="status-badge status-active">{{ robot.status }}</span>
+                            <span class="status-badge
+                                {% if robot.status == 'active' %}status-active
+                                {% elif robot.status == 'warning' %}status-warning
+                                {% elif robot.status == 'critical' %}status-critical
+                                {% elif robot.status == 'maintenance' %}status-maintenance
+                                {% else %}status-inactive{% endif %}">
+                                {{ robot.get_status_display }}
+                            </span>
                         </td>
                     </tr>
                     <tr>
                         <td><strong>Battery Level:</strong></td>
                         <td>
                             <div class="progress" style="height: 8px; margin: 5px 0;">
-                                <div class="determinate" style="width: {{ robot.battery }}%; background-color: {% if robot.battery < 20 %}#F44336{% elif robot.battery < 50 %}#FFC107{% else %}#4CAF50{% endif %};"></div>
+                                <div class="determinate" style="width: {{ robot.battery_level }}%;
+                                    background-color: {% if robot.battery_level < 20 %}#F44336
+                                    {% elif robot.battery_level < 50 %}#FFC107
+                                    {% else %}#4CAF50{% endif %};"></div>
                             </div>
-                            {{ robot.battery }}%
+                            {{ robot.battery_level }}%
                         </td>
                     </tr>
                     <tr>
@@ -40,57 +50,55 @@ Robot Details: {{ robot.name }}
                     </tr>
                     <tr>
                         <td><strong>Current Task:</strong></td>
-                        <td>{{ robot.task }}</td>
+                        <td>{{ robot.current_task|default:"Без задачи" }}</td>
                     </tr>
                     <tr>
                         <td><strong>Temperature:</strong></td>
-                        <td>{{ robot.temperature }}</td>
+                        <td>{{ robot.temperature }}°C</td>
                     </tr>
                     <tr>
                         <td><strong>Uptime:</strong></td>
-                        <td>{{ robot.uptime }}</td>
+                        <td>{{ robot.operational_hours|floatformat:1 }} hours</td>
                     </tr>
                     <tr>
                         <td><strong>Last Maintenance:</strong></td>
-                        <td>{{ robot.last_maintenance }}</td>
+                        <td>{{ robot.last_maintenance|date:"Y-m-d"|default:"N/A" }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
-        <div class="card-panel">
+        <!-- Alerts Section -->
+        <div class="card-panel" style="padding: 20px;">
+            <h4>Alerts</h4>
+            {% if alerts %}
+                <ul class="collection">
+                    {% for alert in alerts %}
+                    <li class="collection-item">
+                        <span class="status-badge
+                            {% if alert.alert_type == 'critical' %}status-critical
+                            {% elif alert.alert_type == 'warning' %}status-warning
+                            {% elif alert.alert_type == 'maintenance' %}status-maintenance
+                            {% else %}status-info{% endif %}">
+                            {{ alert.get_alert_type_display }}
+                        </span>
+                        {{ alert.title }}
+                        <p class="grey-text" style="margin-top: 5px; font-size: 13px;">{{ alert.description }}</p>
+                        <p class="grey-text" style="font-size: 12px;">{{ alert.created_at|timesince }} ago</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No active alerts for this robot</p>
+            {% endif %}
+            <a href="{% url 'alerts' %}" class="btn-flat">View all alerts</a>
+        </div>
+        <div class="card-panel" style="padding: 20px;">
             <h4>Telemetry Data</h4>
             <div style="height: 300px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                 <p>Graph will appear here</p>
             </div>
         </div>
-    </div>
 
-    <div class="col s12 m4">
-        <div class="card-panel">
-            <h4>Quick Actions</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn">Pause</button>
-                <button class="btn">Resume</button>
-                <button class="btn red">E-Stop</button>
-                <button class="btn">Return to Base</button>
-            </div>
-        </div>
-
-        <div class="card-panel">
-            <h4>Alerts</h4>
-            <ul class="collection">
-                <li class="collection-item">
-                    <span class="status-badge status-warning">WARNING</span>
-                    Low battery threshold approaching
-                </li>
-                <li class="collection-item">
-                    <span class="status-badge status-critical">CRITICAL</span>
-                    Motor temperature high
-                </li>
-            </ul>
-            <a href="{% url 'alerts' %}" class="btn-flat">View all alerts</a>
-        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,32 @@
+[
+    {
+        "model": "dashboard.robot",
+        "pk": 1,
+        "fields": {
+            "robot_id": "RBT-001",
+            "name": "Складской робот #1",
+            "robot_type": "warehouse",
+            "status": "active",
+            "battery_level": 85.3,
+            "temperature": 32.1,
+            "location": "Склад А, зона 1",
+            "current_task": "Транспортировка грузов",
+            "owner": 1
+        }
+    },
+    {
+        "model": "dashboard.robot",
+        "pk": 2,
+        "fields": {
+            "robot_id": "RBT-002",
+            "name": "Производственный робот #2",
+            "robot_type": "production",
+            "status": "critical",
+            "battery_level": 15.2,
+            "temperature": 52.3,
+            "location": "Цех 2, станок 5",
+            "current_task": "Обработка деталей",
+            "owner": 1
+        }
+    }
+]

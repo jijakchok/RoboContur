@@ -6,152 +6,263 @@ Alerts Center
 
 {% block content %}
 <div class="alert-section">
-    <div class="alert-filters">
+    <div class="alert-filters block">
         <div>
             <label>Alert Type</label>
-            <select class="browser-default">
-                <option>All Types</option>
-                <option>Critical</option>
-                <option>Warning</option>
-                <option>Maintenance</option>
+            <select class="browser-default" id="alert-type-filter">
+                <option value="all">All Types</option>
+                <option value="critical">Critical</option>
+                <option value="warning">Warning</option>
+                <option value="maintenance">Maintenance</option>
             </select>
         </div>
         <div>
             <label>Robot</label>
-            <select class="browser-default">
-                <option>All Robots</option>
-                <option>RB-001</option>
-                <option>RB-002</option>
-                <option>RB-003</option>
+            <select class="browser-default" id="robot-filter">
+                <option value="all">All Robots</option>
+                {% for robot in robots %}
+                <option value="{{ robot.robot_id }}">{{ robot.name }} ({{ robot.robot_id }})</option>
+                {% endfor %}
             </select>
         </div>
         <div>
             <label>Status</label>
-            <select class="browser-default">
-                <option>Active Alerts</option>
-                <option>Resolved</option>
-                <option>All</option>
+            <select class="browser-default" id="status-filter">
+                <option value="active">Active Alerts</option>
+                <option value="resolved">Resolved</option>
+                <option value="all">All</option>
             </select>
         </div>
         <div>
             <label>Time Range</label>
-            <select class="browser-default">
-                <option>Last 24 hours</option>
-                <option>Last 7 days</option>
-                <option>Last 30 days</option>
-                <option>Custom</option>
+            <select class="browser-default" id="time-range-filter">
+                <option value="24h">Last 24 hours</option>
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
+                <option value="custom">Custom</option>
             </select>
         </div>
         <div style="text-align: right;">
-            <a class="btn" style="margin-top: 25px;">
+            <a href="#" class="btn" id="export-alerts-btn" style="margin-top: 25px;">
                 <i class="material-icons left">download</i> Export
             </a>
         </div>
     </div>
 
-    <div class="alert-section">
-        <div class="alert-section-header">
-            <h4>Critical Alerts</h4>
-            <a href="#" class="btn-flat">View all</a>
-        </div>
-
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #F44336;">error</i>
-                    <span>Critical battery level - RB-004</span>
-                </div>
-                <div class="alert-time">Just now</div>
-            </div>
-            <p>InspectoBot 1 has critically low battery (12%). Needs immediate charging.</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
-            </div>
-        </div>
-
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #F44336;">error</i>
-                    <span>Emergency stop activated - RB-007</span>
-                </div>
-                <div class="alert-time">23 minutes ago</div>
-            </div>
-            <p>PackagingBot 3 emergency stop was triggered at Station 2.</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
-            </div>
-        </div>
+    <!-- Critical Alerts Section -->
+    <!-- Critical Alerts Section -->
+<div class="alert-section">
+    <div class="alert-section-header">
+        <h4>Critical Alerts</h4>
+        <a href="#" class="btn-flat">View all</a>
     </div>
 
+    {% if critical_alerts %}
+        {% for alert in critical_alerts %}
+        <div class="alert-item">
+            <div class="alert-item-header">
+                <div class="alert-content">
+                    <div style="display: flex; align-items: center;">
+                        <i class="material-icons" style="color: #F44336;">error</i>
+                        <span>{{ alert.title }}</span>
+                    </div>
+                    <p>{{ alert.description }}</p>
+                </div>
+                <a href="{% url 'robot_detail' alert.robot.robot_id %}" class="view-robot-btn">View Robot</a>
+                <div class="alert-time">{{ alert.created_at|timesince }} ago</div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-alerts">
+            <p>No critical alerts at the moment</p>
+        </div>
+    {% endif %}
+</div>
+
+    <!-- Warning Alerts Section -->
     <div class="alert-section">
         <div class="alert-section-header">
             <h4>Warning Alerts</h4>
             <a href="#" class="btn-flat">View all</a>
         </div>
 
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #FFA000;">warning</i>
-                    <span>Motor temperature high - RB-003</span>
+        {% if warning_alerts %}
+            {% for alert in warning_alerts %}
+            <div class="alert-item">
+                <div class="alert-item-header">
+                    <div class="alert-content">
+                        <div style="display: flex; align-items: center;">
+                            <i class="material-icons" style="color: #FFA000;">warning</i>
+                            <span>{{ alert.title }} - {{ alert.robot.robot_id }}</span>
+                        </div>
+                        <p>{{ alert.description }}</p>
+                    </div>
+                    <a href="{% url 'robot_detail' alert.robot.robot_id %}" class="view-robot-btn">View Robot</a>
+                    <div class="alert-time">{{ alert.created_at|timesince }} ago</div>
                 </div>
-                <div class="alert-time">1 hour ago</div>
             </div>
-            <p>WelderBot 2 motor temperature approaching limit (78°C).</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
+            {% endfor %}
+        {% else %}
+            <div class="no-alerts">
+                <p>No warning alerts at the moment</p>
             </div>
-        </div>
-
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #FFA000;">warning</i>
-                    <span>Low accuracy - RB-009</span>
-                </div>
-                <div class="alert-time">2 hours ago</div>
-            </div>
-            <p>PaintingBot 1 accuracy has dropped below acceptable threshold.</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
-            </div>
-        </div>
+        {% endif %}
     </div>
 
+    <!-- Maintenance Alerts Section -->
     <div class="alert-section">
         <div class="alert-section-header">
             <h4>Maintenance Alerts</h4>
             <a href="#" class="btn-flat">View all</a>
         </div>
 
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #2196F3;">build</i>
-                    <span>Gripper maintenance due - RB-001</span>
+        {% if maintenance_alerts %}
+            {% for alert in maintenance_alerts %}
+            <div class="alert-item">
+                <div class="alert-item-header">
+                    <div class="alert-content">
+                        <div style="display: flex; align-items: center;">
+                            <i class="material-icons" style="color: #2196F3;">build</i>
+                            <span>{{ alert.title }} - {{ alert.robot.robot_id }}</span>
+                        </div>
+                        <p>{{ alert.description }}</p>
+                    </div>
+                    <a href="{% url 'robot_detail' alert.robot.robot_id %}" class="view-robot-btn">View Robot</a>
+                    <div class="alert-time">{{ alert.created_at|timesince }} ago</div>
                 </div>
-                <div class="alert-time">3 hours ago</div>
             </div>
-            <p>AssemblyBot 1 has reached 95% of expected gripper lifetime.</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
+            {% endfor %}
+        {% else %}
+            <div class="no-alerts">
+                <p>No maintenance alerts at the moment</p>
             </div>
-        </div>
-
-        <div class="alert-item">
-            <div class="alert-item-header">
-                <div style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #2196F3;">build</i>
-                    <span>Lubrication overdue - RB-005</span>
-                </div>
-                <div class="alert-time">1 day ago</div>
-            </div>
-            <p>WelderBot 1 joint lubrication is 2 days overdue.</p>
-            <div style="text-align: center;">
-                <button class="view-robot-btn">View Robot</button>
-            </div>
-        </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Materialize компонентов
+    M.FormSelect.init(document.querySelectorAll('select'));
+
+    // Обработчик для кнопки экспорта
+    document.getElementById('export-alerts-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        M.toast({html: 'Экспорт оповещений будет реализован в будущем'});
+    });
+
+    // Простая фильтрация на клиенте (для демонстрации)
+    document.querySelectorAll('#alert-type-filter, #robot-filter, #status-filter, #time-range-filter').forEach(select => {
+        select.addEventListener('change', function() {
+            // Здесь можно добавить логику фильтрации
+            console.log('Фильтр изменен:', this.id, this.value);
+        });
+    });
+
+    // Обработчик для кнопок "View Robot"
+    document.querySelectorAll('.view-robot-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Действие уже обрабатывается ссылкой href
+        });
+    });
+});
+</script>
+
+<style>
+.alert-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-filters > div {
+    min-width: 200px;
+}
+
+.alert-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.alert-item {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.alert-item-header {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+}
+
+.alert-content {
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.alert-content p {
+    color: #616161;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.view-robot-btn {
+    background-color: #1565c0;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.view-robot-btn:hover {
+    background-color: #0d4a8f;
+    text-decoration: none;
+}
+
+.alert-time {
+    color: #757575;
+    font-size: 13px;
+    min-width: 100px;
+    text-align: right;
+}
+
+.no-alerts {
+    text-align: center;
+    padding: 20px;
+    color: #757575;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .alert-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .alert-time {
+        text-align: left;
+        margin-top: 10px;
+        width: 100%;
+    }
+}
+</style>
 {% endblock %}

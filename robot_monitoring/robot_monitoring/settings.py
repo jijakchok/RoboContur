@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2b0rvkn6ps)ky*=z*ga!ys39wcfnd+i5+4*b^@6c0s)e3@#!^%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'reports',
     'settings',
     'monitoring',
+    'reg',
+    'chat_ai',
+    #'admin',
 
 
     # сторонние
@@ -74,7 +77,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         #'DIRS': [os.path.join(BASE_DIR,'templates')],
     'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': False,
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
