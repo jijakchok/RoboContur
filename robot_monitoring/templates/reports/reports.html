@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-Reports & Analytics
+Отчеты и аналитика
 {% endblock %}
 
 {% block content %}
@@ -9,159 +9,225 @@ Reports & Analytics
     <div class="col s12">
         <div class="card-panel">
             <div class="header">
-                <h2>Report Filters</h2>
+                <h2>Фильтры отчетов</h2>
                 <div class="user-controls">
-                    <a href="#" class="btn" style="background-color: #f0f0f0; color: #333;">
-                        <i class="material-icons">download</i> Export
+                    <a href="#" class="btn waves-effect waves-light" style="background-color: #2196F3;">
+                        <i class="material-icons left">download</i>Экспортировать в Excel
                     </a>
                 </div>
             </div>
 
-            <div class="report-filters">
-                <div class="filter-group">
-                    <label class="filter-label">Report Type</label>
-                    <select class="browser-default">
-                        <option>Performance Summary</option>
-                        <option>Uptime Analysis</option>
-                        <option>Energy Consumption</option>
-                        <option>Maintenance Reports</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">Robot Group</label>
-                    <select class="browser-default">
-                        <option>All Robots</option>
-                        {% for group in groups_data %}
-                        <option>{{ group.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">Time Period</label>
-                    <select class="browser-default">
-                        <option>Last 7 days</option>
-                        <option selected>Last 30 days</option>
-                        <option>Last 90 days</option>
-                        <option>Custom Range</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label class="filter-label">Compare With</label>
-                    <select class="browser-default">
-                        <option>None</option>
-                        <option selected>Previous Period</option>
-                        <option>Same Period Last Year</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-panel">
-            <h4 class="header">Performance Summary (Last 30 Days)</h4>
-
-            <div class="row">
-                <div class="col s12 m4">
-                    <div class="report-card">
-                        <div class="report-card-title">Average Uptime</div>
-                        <div class="report-card-value">{{ avg_uptime }}%</div>
-                        <div class="report-card-change change-{{ uptime_change_direction }}">
-                            <i class="material-icons">{% if uptime_change_direction == 'up' %}trending_up{% elif uptime_change_direction == 'down' %}trending_down{% else %}trending_flat{% endif %}</i>
-                            {% if uptime_change_direction != 'neutral' %}{{ uptime_change }}% from last period{% endif %}
-                        </div>
+            <!-- Простая форма фильтров с перезагрузкой страницы -->
+            <form id="report-filters" method="GET">
+                <div class="row report-filters">
+                    <div class="col s12 m6 l3 filter-group">
+                        <label class="filter-label">Тип отчета</label>
+                        <select name="report_type" class="browser-default">
+                            <option value="performance" {% if request.GET.report_type == 'performance' %}selected{% endif %}>Оценка работы</option>
+                            <option value="uptime" {% if request.GET.report_type == 'uptime' %}selected{% endif %}>Аналитика времени работы</option>
+                            <option value="energy" {% if request.GET.report_type == 'energy' %}selected{% endif %}>Менеджмент энергии</option>
+                            <option value="maintenance" {% if request.GET.report_type == 'maintenance' %}selected{% endif %}>Отчеты о ремонте</option>
+                        </select>
                     </div>
-                </div>
 
-                <div class="col s12 m4">
-                    <div class="report-card">
-                        <div class="report-card-title">Tasks Completed</div>
-                        <div class="report-card-value">{{ tasks_completed }}</div>
-                        <div class="report-card-change change-{{ tasks_change_direction }}">
-                            <i class="material-icons">{% if tasks_change_direction == 'up' %}trending_up{% elif tasks_change_direction == 'down' %}trending_down{% else %}trending_flat{% endif %}</i>
-                            {% if tasks_change_direction != 'neutral' %}{{ tasks_change_percent }}% from last period{% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s12 m4">
-                    <div class="report-card">
-                        <div class="report-card-title">Energy Consumption</div>
-                        <div class="report-card-value">{{ energy_consumption }} kWh</div>
-                        <div class="report-card-change change-{{ energy_change_direction }}">
-                            <i class="material-icons">{% if energy_change_direction == 'up' %}trending_up{% elif energy_change_direction == 'down' %}trending_down{% else %}trending_flat{% endif %}</i>
-                            {% if energy_change_direction != 'neutral' %}{{ energy_change_percent }}% {% if energy_change_direction == 'down' %}decrease{% else %}increase{% endif %} from last period{% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-panel">
-            <h4 class="header">Detailed Analytics</h4>
-
-            <div class="row">
-                <div class="col s12 m6">
-                    <div class="report-card">
-                        <div class="report-card-title">Average Battery Level</div>
-                        <div class="report-card-value">{{ avg_battery }}%</div>
-                        <div class="report-card-subtitle">
-                            Across all {{ total_robots }} robots in the fleet
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col s12 m6">
-                    <div class="report-card">
-                        <div class="report-card-title">Average Temperature</div>
-                        <div class="report-card-value">{{ avg_temperature }}°C</div>
-                        <div class="report-card-subtitle">
-                            Operational temperature across fleet
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top: 20px;">
-                <div class="col s12">
-                    <h5>Group Performance</h5>
-                    <table class="highlight responsive-table">
-                        <thead>
-                            <tr>
-                                <th>Group Name</th>
-                                <th>Robots</th>
-                                <th>Uptime %</th>
-                                <th>Avg Battery %</th>
-                                <th>Active Alerts</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for group in groups_data %}
-                            <tr>
-                                <td>{{ group.name }}</td>
-                                <td>{{ group.robots_count }}</td>
-                                <td>{{ group.uptime }}%</td>
-                                <td>{{ group.avg_battery }}%</td>
-                                <td>
-                                    <span class="{% if group.alerts_count > 0 %}status-critical{% else %}status-active{% endif %}">
-                                        {{ group.alerts_count }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="#" class="btn btn-small blue">
-                                        <i class="material-icons">visibility</i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6" class="center-align">No robot groups defined</td>
-                            </tr>
+                    <div class="col s12 m6 l3 filter-group">
+                        <label class="filter-label">Группа роботов</label>
+                        <select name="group_id" class="browser-default">
+                            <option value="">Все роботы</option>
+                            {% for group in all_groups %}
+                            <option value="{{ group.id }}" {% if request.GET.group_id|add:"0" == group.id %}selected{% endif %}>
+                                {{ group.name }} ({{ group.robots_count }})
+                            </option>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        </select>
+                    </div>
+
+                    <div class="col s12 m6 l3 filter-group">
+                        <label class="filter-label">Период времени</label>
+                        <select name="period" class="browser-default">
+                            <option value="1h" {% if request.GET.period == '1h' %}selected{% endif %}>Последний час</option>
+                            <option value="10h" {% if request.GET.period == '10h' %}selected{% endif %}>Последние 10 часов</option>
+                            <option value="24h" {% if request.GET.period == '24h' or not request.GET.period %}selected{% endif %}>Последний день</option>
+                            <option value="7d" {% if request.GET.period == '7d' %}selected{% endif %}>Последняя неделя</option>
+                            <option value="30d" {% if request.GET.period == '30d' %}selected{% endif %}>Последний месяц</option>
+                        </select>
+                    </div>
+
+                    <div class="col s12 m6 l3 filter-group">
+                        <label class="filter-label">Сравнение</label>
+                        <select name="compare" class="browser-default">
+                            <option value="none" {% if request.GET.compare == 'none' %}selected{% endif %}>Нет сравнения</option>
+                            <option value="prev" {% if request.GET.compare == 'prev' or not request.GET.compare %}selected{% endif %}>
+                                Предыдущий период
+                            </option>
+                            <option value="same_last_year" {% if request.GET.compare == 'same_last_year' %}selected{% endif %}>
+                                Аналогичный период прошлого года
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn waves-effect waves-light blue">
+                        <i class="material-icons left">filter_alt</i>Применить фильтры
+                    </button>
+                    <a href="{% url 'reports' %}" class="btn waves-effect waves-light grey">
+                        <i class="material-icons left">refresh</i>Сбросить
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Ключевые метрики -->
+        <div class="card-panel">
+            <h4 class="header">Ключевые метрики</h4>
+            <div class="row">
+                <div class="col s12 m6 l4">
+                    <div class="metric-card {% if uptime_change_direction == 'up' %}positive{% elif uptime_change_direction == 'down' %}negative{% endif %}">
+                        <div class="metric-title">Среднее время безотказной работы</div>
+                        <div class="metric-value">{{ avg_uptime|floatformat:1 }}<span class="unit">%</span></div>
+                        <div class="metric-change">
+                            {% if uptime_change_direction != 'neutral' %}
+                                <span class="change-indicator {% if uptime_change_direction == 'up' %}positive{% else %}negative{% endif %}">
+                                    {% if uptime_change_direction == 'up' %}↑{% else %}↓{% endif %} {{ uptime_change|floatformat:1 }}%
+                                </span>
+                                <span class="change-label">относительно предыдущего периода</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l4">
+                    <div class="metric-card {% if tasks_change_direction == 'up' %}positive{% elif tasks_change_direction == 'down' %}negative{% endif %}">
+                        <div class="metric-title">Выполнено задач</div>
+                        <div class="metric-value">{{ tasks_completed }}</div>
+                        <div class="metric-change">
+                            {% if tasks_change_direction != 'neutral' %}
+                                <span class="change-indicator {% if tasks_change_direction == 'up' %}positive{% else %}negative{% endif %}">
+                                    {% if tasks_change_direction == 'up' %}↑{% else %}↓{% endif %} {{ tasks_change_percent|floatformat:1 }}%
+                                </span>
+                                <span class="change-label">динамика к предыдущему периоду</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m12 l4">
+                    <div class="metric-card energy {% if energy_change_direction == 'down' %}positive{% elif energy_change_direction == 'up' %}negative{% endif %}">
+                        <div class="metric-title">Энергопотребление</div>
+                        <div class="metric-value">{{ energy_consumption|floatformat:1 }}<span class="unit">кВт⋅ч</span></div>
+                        <div class="metric-change">
+                            {% if energy_change_direction != 'neutral' %}
+                                <span class="change-indicator {% if energy_change_direction == 'down' %}positive{% else %}negative{% endif %}">
+                                    {% if energy_change_direction == 'down' %}↓{% else %}↑{% endif %} {{ energy_change_percent|floatformat:1 }}%
+                                </span>
+                                <span class="change-label">
+                                    {% if energy_change_direction == 'down' %}Экономия{% else %}Перерасход{% endif %} энергии
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Детализированная аналитика -->
+        <div class="card-panel">
+            <h4 class="header">Детализированная аналитика</h4>
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="analytics-card">
+                        <h5>Состояние батарей</h5>
+                        <div class="battery-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ avg_battery|floatformat:1 }}%</span>
+                                <span class="stat-label">средний заряд</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ total_robots }}</span>
+                                <span class="stat-label">всего роботов</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col s12 m6">
+                    <div class="analytics-card">
+                        <h5>Температурный режим</h5>
+                        <div class="temp-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ avg_temperature|floatformat:1 }}°C</span>
+                                <span class="stat-label">средняя температура</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value {% if high_temp_count > 0 %}critical{% endif %}">{{ high_temp_count }}</span>
+                                <span class="stat-label">роботов с перегревом</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица групп -->
+            <div class="row" style="margin-top: 30px;">
+                <div class="col s12">
+                    <h5>Производительность групп</h5>
+                    <div class="responsive-table-wrapper">
+                        <table class="highlight responsive-table group-table">
+                            <thead>
+                                <tr>
+                                    <th>Группа</th>
+                                    <th>Роботов</th>
+                                    <th>Активность</th>
+                                    <th>Батарея</th>
+                                    <th>Температура</th>
+                                    <th>Алерты</th>
+                                    <th>Энергия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in groups_data %}
+                                <tr class="{% if group.alerts_count > 0 %}has-alerts{% endif %}">
+                                    <td>
+                                        <span class="group-name">{{ group.name }}</span>
+                                        <span class="group-type">{{ group.get_group_type_display }}</span>
+                                    </td>
+                                    <td>{{ group.robots_count }}</td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: {{ group.uptime }}%; background-color: {% if group.uptime > 85 %}#4CAF50{% elif group.uptime > 60 %}#FFC107{% else %}#F44336{% endif %}"></div>
+                                            <span class="progress-value">{{ group.uptime|floatformat:1 }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="battery-level {% if group.avg_battery < 30 %}critical{% elif group.avg_battery < 50 %}warning{% endif %}">
+                                            {{ group.avg_battery|floatformat:1 }}%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="temperature {% if group.avg_temperature > 45 %}critical{% elif group.avg_temperature > 40 %}warning{% endif %}">
+                                            {{ group.avg_temperature|floatformat:1 }}°C
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="alert-badge {% if group.alerts_count > 0 %}critical{% endif %}">
+                                            {{ group.alerts_count }}
+                                        </span>
+                                    </td>
+                                    <td>{{ group.energy_consumption|floatformat:1 }} кВт⋅ч</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="center-align">
+                                        <div class="no-data">
+                                            <i class="material-icons large">assignment</i>
+                                            <p>Нет данных для отображения</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,61 +235,280 @@ Reports & Analytics
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация Materialize компонентов
+    M.FormSelect.init(document.querySelectorAll('select'));
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+});
+</script>
+{% endblock %}
+
 {% block styles %}
 <style>
-.report-card {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-left: 4px solid #1565c0;
+:root {
+    --color-primary: #2196F3;
+    --color-success: #4CAF50;
+    --color-warning: #FFC107;
+    --color-danger: #F44336;
+    --color-critical: #D32F2F;
+    --color-alert-bg: #FFF8E1;
 }
 
-.report-card-title {
-    font-size: 16px;
-    color: #616161;
-    margin-bottom: 8px;
+/* Фильтры */
+.report-filters {
+    padding: 15px 0;
+    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.report-card-value {
-    font-size: 28px;
-    font-weight: bold;
-    color: #212121;
+.filter-group {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-label {
+    font-size: 0.9rem;
+    color: #546E7A;
+    display: block;
     margin-bottom: 5px;
+    font-weight: 500;
 }
 
-.report-card-change {
-    font-size: 14px;
+.filter-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Метрики */
+.metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-top: 4px solid var(--color-primary);
+}
+
+.metric-card.positive {
+    border-top-color: var(--color-success);
+}
+
+.metric-card.negative {
+    border-top-color: var(--color-danger);
+}
+
+.metric-card.energy {
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.metric-title {
+    font-size: 1.1rem;
+    color: #546E7A;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #263238;
+    margin: 10px 0;
+}
+
+.unit {
+    font-size: 1.2rem;
+    color: #78909C;
+}
+
+.metric-change {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
-.report-card-subtitle {
-    font-size: 13px;
-    color: #757575;
+.change-indicator {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.change-indicator.positive {
+    color: var(--color-success);
+}
+
+.change-indicator.negative {
+    color: var(--color-danger);
+}
+
+.change-label {
+    color: #78909C;
+    font-size: 0.95rem;
+}
+
+/* Детальная аналитика */
+.analytics-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    height: 100%;
+}
+
+.battery-stats, .temp-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #263238;
+}
+
+.stat-value.critical {
+    color: var(--color-critical);
+}
+
+.stat-label {
+    color: #78909C;
+    font-size: 0.95rem;
+    display: block;
     margin-top: 5px;
 }
 
-.change-up {
-    color: #388e3c;
+/* Таблица групп */
+.group-table {
+    border-collapse: collapse;
 }
 
-.change-down {
-    color: #d32f2f;
+.group-table th {
+    background-color: #E3F2FD;
+    color: #1565C0;
+    font-weight: 600;
 }
 
-.change-neutral {
-    color: #757575;
+.group-table td {
+    vertical-align: middle;
+    padding: 12px 8px;
 }
 
-.status-critical {
-    color: #d32f2f;
-    font-weight: bold;
+.group-name {
+    font-weight: 600;
+    color: #1565C0;
 }
 
-.status-active {
-    color: #388e3c;
+.group-type {
+    display: block;
+    font-size: 0.85rem;
+    color: #78909C;
+    margin-top: 3px;
+}
+
+.progress-bar {
+    height: 24px;
+    background-color: #ECEFF1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.progress-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #263238;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-shadow: 0 0 2px rgba(255,255,255,0.8);
+}
+
+.alert-badge {
+    display: inline-block;
+    min-width: 24px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-align: center;
+    background-color: #E0E0E0;
+    color: #424242;
+}
+
+.alert-badge.critical {
+    background-color: var(--color-alert-bg);
+    color: var(--color-critical);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+.has-alerts {
+    background-color: rgba(255, 248, 225, 0.5);
+}
+
+/* Нет данных */
+.no-data {
+    padding: 40px 20px;
+    text-align: center;
+    color: #78909C;
+}
+
+.no-data i {
+    font-size: 4rem;
+    color: #B0BEC5;
+    margin-bottom: 15px;
+}
+
+.no-data p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .report-filters {
+        flex-direction: column;
+    }
+
+    .metric-card {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-actions {
+        flex-direction: column;
+    }
+
+    .filter-actions .btn {
+        width: 100%;
+    }
 }
 </style>
 {% endblock %}

@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 
 {% block header %}
-Fleet Management
+Менеджмент групп роботов
 {% endblock %}
 
 {% block content %}
 <div class="fleet-metrics">
     <div class="fleet-metric">
         <div class="fleet-metric-header">
-            <h4>Total Fleet Size</h4>
+            <h4>Всего роботов</h4>
             <i class="material-icons">settings</i>
         </div>
         <div class="fleet-metric-value">{{ total_fleet_size }}</div>
         <div class="fleet-metric-subtitle">
             <i class="material-icons" style="color: #4CAF50;">trending_up</i>
-            {% if total_fleet_size > 0 %}+15% growth this quarter{% else %}No data{% endif %}
+            {% if total_fleet_size > 0 %} 10 за последний месяц {% else %}No data{% endif %}
         </div>
     </div>
 
     <div class="fleet-metric">
         <div class="fleet-metric-header">
-            <h4>Average Uptime</h4>
+            <h4>Среднее время активности</h4>
             <i class="material-icons">access_time</i>
         </div>
         <div class="fleet-metric-value">{{ average_uptime }}%</div>
@@ -31,13 +31,13 @@ Fleet Management
 
     <div class="fleet-metric">
         <div class="fleet-metric-header">
-            <h4>Maintenance Needed</h4>
+            <h4>Нуждаются в обслуживании</h4>
             <i class="material-icons">build</i>
         </div>
         <div class="fleet-metric-value">{{ maintenance_needed }}</div>
         <div class="fleet-metric-subtitle">
             {% if maintenance_needed > 0 %}
-                <i class="material-icons" style="color: #F44336;">warning</i> {{ maintenance_needed }} overdue
+                <i class="material-icons" style="color: #F44336;">warning</i> {{ maintenance_needed }} желательно обслуживание
             {% else %}
                 All robots operational
             {% endif %}
@@ -46,7 +46,7 @@ Fleet Management
 
     <div class="fleet-metric">
         <div class="fleet-metric-header">
-            <h4>Fleet Age</h4>
+            <h4>Возраст роботов</h4>
             <i class="material-icons">event</i>
         </div>
         <div class="fleet-metric-value">{{ fleet_age }}</div>
@@ -57,7 +57,7 @@ Fleet Management
 </div>
 
 <div class="alert-section">
-    <h4>Robot Groups</h4>
+    <h4>Группы роботов</h4>
     <div class="robot-groups">
         {% if robot_groups %}
             {% for group in robot_groups %}
@@ -69,7 +69,7 @@ Fleet Management
                 <div class="group-stats">
                     <div>
                         <i class="material-icons" style="font-size: 16px; color: #2196F3;">access_time</i>
-                        Avg uptime: {{ group.uptime }}%
+                        Среднее время работы: {{ avg_uptime|floatformat:1 }}%
                     </div>
                 </div>
 
@@ -79,11 +79,11 @@ Fleet Management
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Location</th>
-                                <th>Task</th>
-                                <th>Actions</th>
+                                <th>Имя</th>
+                                <th>Статус</th>
+                                <th>Локация</th>
+                                <th>Задача</th>
+                                <th>Посмотреть</th>
                             </tr>
                         </thead>
                         <tbody>

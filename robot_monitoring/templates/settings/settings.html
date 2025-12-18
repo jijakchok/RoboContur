@@ -1,51 +1,43 @@
 {% extends 'base.html' %}
 
 {% block header %}
-Settings
+Настройки
 {% endblock %}
 
 {% block content %}
 <div class="settings-container">
     <div class="settings-menu">
-        <h5 class="header">Settings Menu</h5>
+        <h5 class="header">Меню настроек</h5>
 
         <div class="settings-menu-item active">
-            <i class="material-icons">account_circle</i> User Profile
+            <i class="material-icons">account_circle</i> Профиль пользователя
         </div>
 
         <div class="settings-menu-item">
-            <i class="material-icons">shield</i> Security
+            <i class="material-icons">shield</i> Конфиденциальность
         </div>
 
         <div class="settings-menu-item">
-            <i class="material-icons">notifications</i> Notifications
+            <i class="material-icons">warning</i> Оповещения
         </div>
 
         <div class="settings-menu-item">
-            <i class="material-icons">warning</i> Alert Settings
+            <i class="material-icons">build</i> Конфигурация роботов
         </div>
 
         <div class="settings-menu-item">
-            <i class="material-icons">build</i> Robot Configuration
+            <i class="material-icons">group</i> Управление аккаунтом
         </div>
 
         <div class="settings-menu-item">
-            <i class="material-icons">group</i> User Management
-        </div>
-
-        <div class="settings-menu-item" data-item="data-retention">
-            <i class="material-icons">database</i> Data Retention
-        </div>
-
-        <div class="settings-menu-item">
-            <i class="material-icons">language</i> System Settings
+            <i class="material-icons">language</i> Системные настройки
         </div>
     </div>
 
     <div class="settings-content">
         <div class="settings-section">
-            <h4 class="settings-section-title">User Profile</h4>
-            <p>Update your personal information and preferences</p>
+            <h4 class="settings-section-title">Профиль пользователя</h4>
+            <p>Обновите свою персональную информацию</p>
 
             <div class="user-profile-container">
                 <div class="user-avatar">
@@ -54,27 +46,27 @@ Settings
 
                 <div class="user-info">
                     <div>
-                        <label>First name</label>
+                        <label>Имя</label>
                         <div>Operator</div>
                     </div>
 
                     <div>
-                        <label>Last name</label>
+                        <label>Фамилия</label>
                         <div>Admin</div>
                     </div>
 
                     <div>
-                        <label>Email address</label>
+                        <label>Адрес почты</label>
                         <div>operator@example.com</div>
                     </div>
 
                     <div>
-                        <label>Phone number</label>
+                        <label>Номер телефона</label>
                         <div>+8 (925) 123-45-67</div>
                     </div>
 
                     <div>
-                        <label>Timezone</label>
+                        <label>Временная зона</label>
                         <div>8:00 по Мск</div>
                     </div>
                 </div>
@@ -82,51 +74,45 @@ Settings
         </div>
 
         <div class="settings-section">
-            <h4 class="settings-section-title">Notification Preferences</h4>
+            <h4 class="settings-section-title">Настройки уведомлений</h4>
 
             <div class="notification-preferences">
                 <div class="form-group">
                     <input type="checkbox" id="email-notifications" checked>
-                    <label for="email-notifications">Email notifications</label>
-                    <p style="font-size: 12px; color: #757575;">Get notified about important system events via email</p>
-                </div>
-
-                <div class="form-group">
-                    <input type="checkbox" id="push-notifications" checked>
-                    <label for="push-notifications">Push notifications</label>
-                    <p style="font-size: 12px; color: #757575;">Receive instant alerts on your mobile device</p>
+                    <label for="email-notifications">Почтовые уведомления</label>
+                    <p style="font-size: 12px; color: #757575;">Отправка уведомлений о системных происшействиях на почту</p>
                 </div>
 
                 <div class="form-group">
                     <input type="checkbox" id="sms-alerts">
-                    <label for="sms-alerts">SMS alerts</label>
-                    <p style="font-size: 12px; color: #757575;">Get critical alerts via text message</p>
+                    <label for="sms-alerts">СМС уведомления</label>
+                    <p style="font-size: 12px; color: #757575;">Отправка уведомлений о системных происшействиях СМС сообщениями</p>
                 </div>
             </div>
         </div>
 
         <div class="settings-section">
-            <h4 class="settings-section-title">Change Password</h4>
+            <h4 class="settings-section-title">Смена пароля</h4>
 
             <div class="password-form">
                 <div class="form-group">
-                    <label for="current-password">Current password</label>
-                    <input type="password" id="current-password" placeholder="Enter current password">
+                    <label for="current-password">Текущий пароль</label>
+                    <input type="password" id="current-password" placeholder="Введите текущий пароль">
                 </div>
 
                 <div class="form-group">
-                    <label for="new-password">New password</label>
-                    <input type="password" id="new-password" placeholder="Enter new password">
+                    <label for="new-password">Новый пароль</label>
+                    <input type="password" id="new-password" placeholder="Введите новый пароль">
                 </div>
 
                 <div class="form-group">
-                    <label for="confirm-password">Confirm new password</label>
-                    <input type="password" id="confirm-password" placeholder="Confirm new password">
+                    <label for="confirm-password">Подтверждение нового пароля</label>
+                    <input type="password" id="confirm-password" placeholder="Подтвердите пароль">
                 </div>
 
                 <div class="form-group" style="display: flex; align-items: flex-end; justify-content: flex-end;">
-                    <button class="btn" style="background-color: #e0e0e0; color: #333; margin-right: 10px;">Cancel</button>
-                    <button class="btn" style="background-color: #1565c0; color: white;">Update Password</button>
+                    <button class="btn" style="background-color: #e0e0e0; color: #333; margin-right: 10px;">Отмена</button>
+                    <button class="btn" style="background-color: #1565c0; color: white;">Обновить пароль</button>
                 </div>
             </div>
         </div>

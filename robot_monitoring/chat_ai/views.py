@@ -119,7 +119,7 @@ def format_robots_context(robots_data):
 def call_hf_api(user_message, robot_context):
     """Выполняет запрос к Hugging Face API с правильным URL"""
     # Токен Hugging Face
-
+    HF_TOKEN = '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'
 
     headers = {
         "Authorization": f"Bearer {HF_TOKEN}",
@@ -128,7 +128,7 @@ def call_hf_api(user_message, robot_context):
 
     # Формируем полный запрос с контекстом
     full_message = (
-        f"Отвечай только на русском языке.Не делай текст жирным. Пользователь спрашивает: {user_message}\n\n"
+        f"Отвечай только на русском языке.Не используй НИКАКИХ средств выделения. Пользователь спрашивает: {user_message}\n\n"
         f"Контекст по роботам:\n{robot_context}\n\n"
         f"Пожалуйста, дай краткий, но информативный ответ. Если вопрос требует детального ответа, структурируй его по пунктам. "
         f"Всегда учитывай контекст по роботам при ответе."

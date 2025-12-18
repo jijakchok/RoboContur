@@ -46,43 +46,34 @@
             </div>
 
             <div class="dashboard-card">
-    <div class="dashboard-card-header">
-        <h3>Группы</h3>
-        <i class="material-icons">group</i>
-    </div>
-    <div class="dashboard-card-value">{{ robot_groups|length|default:robot_groups.count }}</div>
-    <div class="dashboard-card-subtitle">
-        <i class="material-icons">info</i>
-        {% if is_test_data %}
-            Тестовые группы
-        {% else %}
-            Организация роботов
-        {% endif %}
-    </div>
-</div>
-        </div>
-    </div>
-
-    <!-- График активности (заглушка)<div class="col s12">
-        <div class="card-panel block">
-            <h5>Активность роботов за последний час</h5>
-            <div class="robot-visualization" style="height: 250px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center;">
-                    <i class="material-icons" style="font-size: 48px; color: #757575;">show_chart</i>
-                    <p style="color: #757575; margin-top: 10px;">График активности будет отображаться здесь</p>
+                <div class="dashboard-card-header">
+                    <h3>Группы</h3>
+                    <i class="material-icons">group</i>
+                </div>
+                <div class="dashboard-card-value">{{ robot_groups|length|default:robot_groups.count }}</div>
+                <div class="dashboard-card-subtitle">
+                    <i class="material-icons">info</i>
+                    {% if is_test_data %}
+                        Тестовые группы
+                    {% else %}
+                        Организация роботов
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </div> -->
-
+    </div>
 
     <!-- Таблица роботов -->
-    <!-- Таблица роботов -->
-<div class="col s12">
+    <div class="col s12">
     <div class="card-panel block">
         <div class="row">
             <div class="col s12">
-                <h5>Текущие роботы</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Текущие роботы</h5>
+                    <button id="toggle-robots-btn" class="btn btn-small blue" style="margin-right: 15px;">
+                        Развернуть все
+                    </button>
+                </div>
                 <table class="robot-table">
                     <thead>
                         <tr>
@@ -98,9 +89,9 @@
                             <th>Действия</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="robots-table-body">
                         {% for robot in recent_robots %}
-                        <tr>
+                        <tr class="robot-row {% if forloop.counter > 5 %}hidden-robot d-none{% endif %}">
                             <td>{{ robot.robot_id|default:robot.id }}</td>
                             <td>{{ robot.name }}</td>
                             <td>
@@ -123,27 +114,24 @@
                             </td>
                             <td>{{ robot.group|default:"Без группы" }}</td>
                             <td>
-                                <span class="status-badge
-                                    {% if robot.status == 'active' %}status-active
-                                    {% elif robot.status == 'warning' %}status-warning
-                                    {% elif robot.status == 'critical' %}status-critical
-                                    {% elif robot.status == 'maintenance' %}status-maintenance
-                                    {% else %}status-inactive{% endif %}">
+                                <span class="status-badge {{ robot.status|default:'offline' }}">
                                     {% if robot.status == 'active' %}Активен
+                                    {% elif robot.status == 'idle' %}Простой
                                     {% elif robot.status == 'warning' %}Предупреждение
                                     {% elif robot.status == 'critical' %}Критический
                                     {% elif robot.status == 'maintenance' %}Обслуживание
+                                    {% elif robot.status == 'offline' %}Оффлайн
                                     {% else %}{{ robot.status }}{% endif %}
                                 </span>
                             </td>
                             <td>
                                 <div class="progress" style="height: 8px;">
-                                  <div class="progress" style="height: 8px;">
-    <div class="determinate" style="width: {{ robot.battery_level|default:85 }}%;
-        background-color: {% if robot.battery_level|default:85 < 30 %}#d32f2f{% elif robot.battery_level|default:85 < 50 %}#f57f17{% else %}#388e3c{% endif %};">
-    </div>
-</div>
-<span style="font-size: 12px;">{{ robot.battery_level|default:85|floatformat:0 }}%</span>
+                                    <div class="determinate" style="width: {{ robot.battery_level|default:85 }}%;
+                                        background-color: {% if robot.battery_level|default:85 < 30 %}#d32f2f{% elif robot.battery_level|default:85 < 50 %}#f57f17{% else %}#388e3c{% endif %};">
+                                    </div>
+                                </div>
+                                <span style="font-size: 12px;">{{ robot.battery_level|default:85|floatformat:0 }}%</span>
+                            </td>
                             <td>
                                 <span style="color: {% if robot.temperature|default:30 > 45 %}#d32f2f{% elif robot.temperature|default:30 > 40 %}#f57f17{% else %}#388e3c{% endif %};">
                                     {{ robot.temperature|default:30|floatformat:1 }}°C
@@ -152,10 +140,10 @@
                             <td>{{ robot.location|default:"Неизвестно" }}</td>
                             <td>{{ robot.task|default:robot.current_task|default:"Без задачи"|truncatechars:20 }}</td>
                             <td>
-    <a href="{% url 'robot_detail' robot.robot_id %}" class="btn btn-small blue" title="Просмотреть">
-        <i class="material-icons">visibility</i>
-    </a>
-</td>
+                                <a href="{% url 'robot_detail' robot.robot_id %}" class="btn btn-small blue" title="Просмотреть">
+                                    <i class="material-icons">visibility</i>
+                                </a>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -164,6 +152,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <div id="robots-more-info" class="d-none center-align" style="color: #757575; margin-top: 10px;">
+                    Показаны {{ total_robots }} роботов из {{ total_robots }}
+                </div>
             </div>
         </div>
     </div>
@@ -172,19 +163,24 @@
     <!-- Оповещения -->
     <div class="col s12">
     <div class="card-panel block">
-        <h5>Активные оповещения</h5>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Активные оповещения</h5>
+            <button id="toggle-alerts-btn" class="btn btn-small blue" style="margin-right: 15px;">
+                Показать все
+            </button>
+        </div>
         <div class="row">
             <div class="col s4">
                 <div class="collection">
                     <h6 class="collection-header">Критические</h6>
                     {% if critical_alerts_list %}
                         {% for alert in critical_alerts_list %}
-                        <a href="#" class="collection-item red white-text">
-                            <div class="row">
-                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
-                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
-                            </div>
-                        </a>
+                            <a href="#" class="collection-item red white-text {% if forloop.counter > 5 %}hidden-alert d-none{% endif %}">
+                                <div class="row">
+                                    <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                    <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                                </div>
+                            </a>
                         {% endfor %}
                     {% else %}
                         <a href="#" class="collection-item">Нет критических оповещений</a>
@@ -196,12 +192,12 @@
                     <h6 class="collection-header">Предупреждения</h6>
                     {% if warning_alerts_list %}
                         {% for alert in warning_alerts_list %}
-                        <a href="#" class="collection-item orange white-text">
-                            <div class="row">
-                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
-                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
-                            </div>
-                        </a>
+                            <a href="#" class="collection-item orange white-text {% if forloop.counter > 5 %}hidden-alert d-none{% endif %}">
+                                <div class="row">
+                                    <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                    <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                                </div>
+                            </a>
                         {% endfor %}
                     {% else %}
                         <a href="#" class="collection-item">Нет предупреждений</a>
@@ -213,12 +209,12 @@
                     <h6 class="collection-header">Обслуживание</h6>
                     {% if maintenance_alerts_list %}
                         {% for alert in maintenance_alerts_list %}
-                        <a href="#" class="collection-item blue white-text">
-                            <div class="row">
-                                <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
-                                <div class="col s4 right-align">{{ alert.created_at|time }}</div>
-                            </div>
-                        </a>
+                            <a href="#" class="collection-item blue white-text {% if forloop.counter > 5 %}hidden-alert d-none{% endif %}">
+                                <div class="row">
+                                    <div class="col s8">{{ alert.robot.name }}: {{ alert.title }}</div>
+                                    <div class="col s4 right-align">{{ alert.created_at|time }}</div>
+                                </div>
+                            </a>
                         {% endfor %}
                     {% else %}
                         <a href="#" class="collection-item">Нет роботов на обслуживании</a>
@@ -231,35 +227,70 @@
 
     <!-- Статистика по местоположениям -->
     <div class="col s12">
-        <div class="card-panel block">
-            <h5>Статистика по местоположениям</h5>
-            <div class="row">
-                {% for location in location_stats %}
-                <div class="col s6 m4 l3">
-                    <div class="fleet-metric">
-                        <div class="fleet-metric-header">
-                            <h4>{{ location.location|default:"Неизвестное место" }}</h4>
-                            <i class="material-icons">location_on</i>
-                        </div>
-                        <div class="fleet-metric-value">{{ location.count }}</div>
-                        <div class="fleet-metric-subtitle">
-                            <i class="material-icons">battery_charging_full</i>
-                            Средний заряд: {{ location.avg_battery|default:0|floatformat:0 }}%
-                        </div>
-                        <div class="fleet-metric-subtitle">
-                            <i class="material-icons">thermostat</i>
-                            Средняя темп: {{ location.avg_temperature|default:0|floatformat:1 }}°C
-                        </div>
+    <div class="card-panel block">
+        <h5>Статистика по местоположениям</h5>
+        <div class="row location-stats-container">
+            {% for location in location_stats %}
+            <div class="col s12 m6 l3 mb-3 px-1">
+                <div class="fleet-metric card hoverable" style="min-height: 210px; display: flex; flex-direction: column; padding: 14px;">
+                    <div class="fleet-metric-header d-flex justify-content-between align-items-start mb-1">
+                        <h4 class="truncate" style="font-size: 1.05rem; font-weight: 500; margin: 0 5px 0 0; line-height: 1.3;">
+                            {{ location.location|default:"Неизвестное место" }}
+                        </h4>
+                        <i class="material-icons" style="font-size: 1.1rem; flex-shrink: 0;">location_on</i>
+                    </div>
+                    <div class="fleet-metric-value" style="font-size: 2.1rem; font-weight: 700; margin: 8px 0 10px; color: #2196f3; line-height: 1.1;">
+                        {{ location.count }} роботов
+                    </div>
+                    <div class="metric-label" style="font-size: 0.85rem; color: #757575; margin-bottom: 8px; font-weight: 500;">
+                        роботов на локации
+                    </div>
+                    <div class="fleet-metric-subtitle d-flex align-items-center mb-1" style="font-size: 0.85rem;">
+                        <i class="material-icons" style="font-size: 16px; margin-right: 4px;">battery_charging_full</i>
+                        <span>Заряд: {{ location.avg_battery|default:0|floatformat:0 }}%</span>
+                    </div>
+                    <div class="fleet-metric-subtitle d-flex align-items-center" style="font-size: 0.85rem;">
+                        <i class="material-icons" style="font-size: 16px; margin-right: 4px;">thermostat</i>
+                        <span>Темп: {{ location.avg_temperature|default:0|floatformat:1 }}°C</span>
                     </div>
                 </div>
-                {% empty %}
-                <div class="col s12">
-                    <p class="center-align" style="color: #757575;">Нет данных по местоположениям</p>
-                </div>
-                {% endfor %}
             </div>
+            {% empty %}
+            <div class="col s12">
+                <p class="center-align" style="color: #757575; padding: 20px 0;">Нет данных по местоположениям</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
+</div>
+
+<style>
+.location-stats-container {
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+}
+
+.location-stats-container > .col {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+.fleet-metric {
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    position: relative;
+}
+
+.fleet-metric:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.metric-label {
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+}
+</style>
 </div>
 {% endblock %}
 
@@ -287,9 +318,234 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 30);
     });
 
-    // Обработчик для кнопок действий (модифицированный)
+    // Обработчики для кнопок разворачивания
+    const toggleRobotsBtn = document.getElementById('toggle-robots-btn');
+    const toggleAlertsBtn = document.getElementById('toggle-alerts-btn');
 
+    if (toggleRobotsBtn) {
+        toggleRobotsBtn.addEventListener('click', function() {
+            const hiddenRows = document.querySelectorAll('.hidden-robot');
+            const isExpanded = this.textContent === 'Свернуть';
+
+            hiddenRows.forEach(row => {
+                row.classList.toggle('d-none', isExpanded);
+            });
+
+            this.textContent = isExpanded ? 'Развернуть все' : 'Свернуть';
+
+            // Показать/скрыть информацию о количестве
+            document.getElementById('robots-more-info').classList.toggle('d-none', isExpanded);
+        });
+    }
+
+    if (toggleAlertsBtn) {
+        toggleAlertsBtn.addEventListener('click', function() {
+            const hiddenAlerts = document.querySelectorAll('.hidden-alert');
+            const isExpanded = this.textContent === 'Свернуть';
+
+            hiddenAlerts.forEach(alert => {
+                alert.classList.toggle('d-none', isExpanded);
+            });
+
+            this.textContent = isExpanded ? 'Показать все' : 'Свернуть';
+        });
+    }
+
+    // Проверяем, нужно ли показывать кнопку "Еще" для оповещений
+    const criticalCount = document.querySelectorAll('.collection-item.red').length;
+    const warningCount = document.querySelectorAll('.collection-item.orange').length;
+    const maintenanceCount = document.querySelectorAll('.collection-item.blue').length;
+
+    // Скрываем первые 5 оповещений при загрузке
+    document.querySelectorAll('.hidden-alert').forEach((alert, index) => {
+        if (index < 5) {
+            alert.classList.add('d-none');
+        }
+    });
+
+    // Инициализируем состояние кнопки
+    if (criticalCount > 5 || warningCount > 5 || maintenanceCount > 5) {
+        toggleAlertsBtn.textContent = 'Показать все';
+    } else {
+        toggleAlertsBtn.style.display = 'none';
+    }
+
+    // Инициализируем состояние кнопки для роботов
+    if ({{ total_robots }} > 5) {
+        toggleRobotsBtn.textContent = 'Развернуть все';
+    } else {
+        toggleRobotsBtn.style.display = 'none';
+    }
+
+    // Функция для обновления данных
+    function fetchData() {
+        fetch('/api/update-robots/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(() => {
+            return fetch('/api/get-robots/')
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Обновляем элементы на странице
+            updateDashboard(data);
+        })
+        .catch(error => {
+            console.error('Ошибка при обновлении данных:', error);
+        });
+    }
+
+    // Функция для получения CSRF токена из cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Функция для обновления элементов дашборда
+    function updateDashboard(data) {
+        // Обновляем счетчики
+        document.querySelector('.dashboard-card-value:nth-child(1)').textContent = data.total_robots;
+        document.querySelector('.dashboard-card-value:nth-child(2)').textContent = data.critical_alerts;
+        document.querySelector('.dashboard-card-value:nth-child(3)').textContent = data.maintenance_robots;
+        document.querySelector('.dashboard-card-value:nth-child(4)').textContent = data.robot_groups_count;
+
+        // Обновляем таблицу роботов
+        const robotsTableBody = document.querySelector('#robots-table tbody');
+        if (robotsTableBody) {
+            robotsTableBody.innerHTML = '';
+
+            data.robots.forEach(robot => {
+                const statusClass = {
+                    'active': 'status-active',
+                    'idle': 'status-idle',
+                    'warning': 'status-warning',
+                    'critical': 'status-critical',
+                    'maintenance': 'status-maintenance',
+                    'offline': 'status-offline'
+                }[robot.status] || 'status-offline';
+
+                const row = document.createElement('tr');
+                row.className = 'robot-row';
+                row.innerHTML = `
+                    <td>${robot.robot_id}</td>
+                    <td>${robot.name}</td>
+                    <td>
+                        <div class="robot-type">
+                            <i class="material-icons">smart_toy</i>
+                            ${robot.robot_type}
+                        </div>
+                    </td>
+                    <td>${robot.group || 'Без группы'}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${robot.status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="progress" style="height: 8px;">
+                            <div class="determinate" style="width: ${robot.battery_level.toFixed(1)}%;
+                                background-color: ${robot.battery_level < 30 ? '#d32f2f' : (robot.battery_level < 50 ? '#f57f17' : '#388e3c')};">
+                            </div>
+                        </div>
+                        <span style="font-size: 12px;">${robot.battery_level.toFixed(1)}%</span>
+                    </td>
+                    <td>
+                        <span style="color: ${robot.temperature > 45 ? '#d32f2f' : (robot.temperature > 40 ? '#f57f17' : '#388e3c')};">
+                            ${robot.temperature.toFixed(1)}°C
+                        </span>
+                    </td>
+                    <td>${robot.location || 'Неизвестно'}</td>
+                    <td>${robot.current_task || 'Без задачи'}</td>
+                    <td>
+                        <a href="/robot/${robot.robot_id}/" class="btn btn-small blue">
+                            <i class="material-icons">visibility</i>
+                        </a>
+                    </td>
+                `;
+                robotsTableBody.appendChild(row);
+            });
+        }
+
+        // Обновляем список оповещений
+        const collections = document.querySelectorAll('.collection');
+        if (collections.length >= 3) {
+            // Очищаем существующие элементы
+            collections[0].innerHTML = '<h6 class="collection-header">Критические</h6>';
+            collections[1].innerHTML = '<h6 class="collection-header">Предупреждения</h6>';
+            collections[2].innerHTML = '<h6 class="collection-header">Обслуживание</h6>';
+
+            // Добавляем новые оповещения
+            data.alerts.forEach(alert => {
+                const alertClass = {
+                    'critical': 'red white-text',
+                    'warning': 'orange white-text',
+                    'maintenance': 'blue white-text',
+                    'info': 'grey white-text'
+                }[alert.alert_type] || 'grey white-text';
+
+                const alertElement = document.createElement('a');
+                alertElement.className = `collection-item ${alertClass}`;
+                alertElement.href = '#';
+                alertElement.innerHTML = `
+                    <div class="row">
+                        <div class="col s8">${alert.robot_name || 'Робот'}: ${alert.title}</div>
+                        <div class="col s4 right-align">${new Date(alert.created_at).toLocaleTimeString()}</div>
+                    </div>
+                `;
+
+                if (alert.alert_type === 'critical') {
+                    collections[0].appendChild(alertElement);
+                } else if (alert.alert_type === 'warning') {
+                    collections[1].appendChild(alertElement);
+                } else if (alert.alert_type === 'maintenance') {
+                    collections[2].appendChild(alertElement);
+                }
+            });
+
+            // Если нет оповещений, добавляем сообщение
+            if (!data.alerts.some(a => a.alert_type === 'critical')) {
+                const noAlertElement = document.createElement('a');
+                noAlertElement.className = 'collection-item';
+                noAlertElement.href = '#';
+                noAlertElement.textContent = 'Нет критических оповещений';
+                collections[0].appendChild(noAlertElement);
+            }
+            if (!data.alerts.some(a => a.alert_type === 'warning')) {
+                const noAlertElement = document.createElement('a');
+                noAlertElement.className = 'collection-item';
+                noAlertElement.href = '#';
+                noAlertElement.textContent = 'Нет предупреждений';
+                collections[1].appendChild(noAlertElement);
+            }
+            if (!data.alerts.some(a => a.alert_type === 'maintenance')) {
+                const noAlertElement = document.createElement('a');
+                noAlertElement.className = 'collection-item';
+                noAlertElement.href = '#';
+                noAlertElement.textContent = 'Нет роботов на обслуживании';
+                collections[2].appendChild(noAlertElement);
+            }
+        }
+    }
+
+    // Запускаем обновление каждые 5 секунд
+    fetchData(); // Первый вызов сразу при загрузке страницы
+    setInterval(fetchData, 25000); // Последующие вызовы каждые 5 секунд
 });
 </script>
 {% endblock %}
-
